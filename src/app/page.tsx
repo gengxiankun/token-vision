@@ -281,28 +281,35 @@ export default function Home() {
           );
         }
 
-        // Top 3
-        if (top5 && top5.length >= 3) {
-          appendLines({ type: 'header', text: 'TOP OPERATORS' });
-          const maxT = Math.max(...top5.slice(0, 3).map(r => r.totalTokens));
-          const maxS = Math.max(...top5.slice(0, 3).map(r => r.sessions));
-          const maxC = Math.max(...top5.slice(0, 3).map(r => r.cost));
-          const badges = ['● MASTER', '◆ NODE', '○ PEER'];
-          const colors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
-          top5.slice(0, 3).forEach((item, i) => {
-            appendLines(
-              { type: 'raw', text: '' },
-              { type: 'html', html: [
-                `<div class="top-card">`,
-                `  <div style="color:${colors[i]};font-size:11px;margin-bottom:4px">${badges[i]}</div>`,
-                `  <div style="font-weight:700;margin-bottom:6px">${item.name}</div>`,
-                `  <div class="top-bar-row"><span>sessions</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.sessions / maxS) * 100}%"></div></div><span>${item.sessions}</span></div>`,
-                `  <div class="top-bar-row"><span>tokens</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.totalTokens / maxT) * 100}%"></div></div><span>${fmt(item.totalTokens)}</span></div>`,
-                `  <div class="top-bar-row"><span>cost</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.cost / maxC) * 100}%"></div></div><span>$${item.cost.toFixed(4)}</span></div>`,
-                `</div>`,
-              ].join('\n') },
+        // Top 10 in 2-column grid
+        const top10 = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens).slice(0, 10);
+        if (top10.length > 0) {
+          appendLines({ type: 'header', text: 'TOP OPERATORS' }, { type: 'sep' });
+          const badges = ['●', '◆', '○'];
+          const colors = ['green', 'amber', 'cyan'];
+          const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+          const rows: string[] = ['<div class="top-grid">'];
+          top10.forEach((item, i) => {
+            const rankColor = i < 3 ? colors[i] : 'dim';
+            const badge = i < 3 ? badges[i] : `#${i + 1}`;
+            const badgeColor = i < 3 ? hexColors[i] : 'var(--c-dim)';
+            rows.push(
+              `<div class="top-card-compact">`,
+              `  <div class="top-card-rank" style="color:${badgeColor}">${badge}</div>`,
+              `  <div class="top-card-info">`,
+              `    <div class="top-card-name">${item.name}</div>`,
+              `    <div class="top-card-stats">`,
+              `      <span class="${i < 3 ? colors[i] : ''}">${fmt(item.totalTokens)}</span>`,
+              `      <span>${item.sessions}s</span>`,
+              `    </div>`,
+              `  </div>`,
+              `</div>`,
             );
           });
+          rows.push('</div>');
+          appendLines(
+            { type: 'html', html: rows.join('\n') },
+          );
         }
         appendLines({ type: 'raw', text: '' });
         break;

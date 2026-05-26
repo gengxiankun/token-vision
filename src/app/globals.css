@@ -253,6 +253,57 @@ body {
   background: rgba(255,255,255,0.015);
 }
 
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.top-card-compact {
+  border: 1px solid var(--c-border);
+  padding: 8px 10px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.015);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-card-rank {
+  font-size: 13px;
+  min-width: 22px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.top-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-card-name {
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 2px;
+  color: var(--c-fg);
+}
+
+.top-card-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--c-dim);
+}
+
+.top-card-stats span {
+  white-space: nowrap;
+}
+
+.top-card-stats .stat-green { color: var(--c-green); }
+.top-card-stats .stat-amber { color: var(--c-amber); }
+.top-card-stats .stat-cyan  { color: var(--c-cyan); }
+
 .top-bar-row {
   display: flex;
   align-items: center;
