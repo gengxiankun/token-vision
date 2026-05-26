@@ -403,6 +403,7 @@ export default function Home() {
       }
 
       case 'refresh': {
+        const now = new Date();
         appendLines(
           { type: 'amber', text: '[REFRESH] re-fetching telemetry data...' },
         );
@@ -410,8 +411,20 @@ export default function Home() {
           .then(r => r.json())
           .then((d: Data) => {
             setData(d);
+            const dataTs = new Date(d.updatedAt);
+            const diffMin = Math.round((now.getTime() - dataTs.getTime()) / 60000);
+            const staleLabel = diffMin < 15 ? 'fresh' : diffMin < 60 ? diffMin + 'm stale' : '>1h stale';
             appendLines(
               { type: 'green', text: '[OK] data refreshed — ' + d.stats.totalPeople + ' nodes, ' + fmt(d.stats.totalTokens) + ' tokens' },
+              { type: 'dim', text: '  data timestamp: ' + fmtDate(d.updatedAt) + ' (' + staleLabel + ')' },
+              { type: 'sep' },
+              { type: 'header', text: 'DATA PIPELINE' },
+              { type: 'raw', text: '' },
+              { type: 'dim', text: '  Auto-update: every 15min via GitHub Actions' },
+              { type: 'dim', text: '  Source: token-tracker → Feishu → GH Actions → GH Pages' },
+              { type: 'dim', text: '  Trigger: https://github.com/gengxiankun/token-vision/actions/workflows/deploy.yml' },
+              { type: 'raw', text: '' },
+              { type: 'dim', text: '  Tip: type `help` to see all available commands.' },
               { type: 'sep' },
             );
           })
@@ -452,7 +465,7 @@ export default function Home() {
           { type: 'raw', text: '' },
           { type: 'dim', text: '  Built with: Next.js + Tailwind CSS + TypeScript' },
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
-          { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 2h)' },
+          { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 15min)' },
           { type: 'raw', text: '' },
           { type: 'raw', text: '  Commands: dashboard | top | ranking | charts | refresh | help | clear' },
           { type: 'raw', text: '' },
