@@ -1,11 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
-} from 'recharts';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 
+/* ── Types ──────────────────────────────────── */
 interface RankingItem {
   rank: number;
   name: string;
@@ -59,316 +56,92 @@ const fmtDate = (iso: string): string => {
   return d.toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-');
 };
 
-/* ── Bar character for mini graphs ──────────── */
-const barChar = (pct: number, maxLen = 20): string => {
-  const filled = Math.round((pct / 100) * maxLen);
-  return '█'.repeat(filled) + '░'.repeat(maxLen - filled);
+const bar = (pct: number, len = 24): string => {
+  const f = Math.round((pct / 100) * len);
+  return '█'.repeat(Math.max(0, f)) + '░'.repeat(Math.max(0, len - f));
 };
 
-/* ── ASCII Banner ───────────────────────────── */
-const AsciiBanner = () => (
-  <pre className="ascii-banner leading-tight mb-3" style={{ fontSize: '10px' }}>
-{'╔══════════════════════════════════════════════════╗\n' +
- '║              ████████  ██  ████████              ║\n' +
- '║              ██░░░░██  ██  ██░░░░                ║\n' +
- '║              ████████  ██  ███████  v1.0.0       ║\n' +
- '║              ██░░░░░░  ██  ██░░░░                ║\n' +
- '║              ██░░░░░░  ██  ████████              ║\n' +
- '╚══════════════════════════════════════════════════╝'}
-  </pre>
-);
-
-/* ── TermBox wrapper ────────────────────────── */
-function TermBox({ title, children, className = '' }: { title?: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`term-box p-3 ${className}`}>
-      {title && <div className="term-title-bar">{title}</div>}
-      {children}
-    </div>
-  );
-}
+/* ── Terminal line types ────────────────────── */
+type TermLine =
+  | { type: 'header'; text: string }
+  | { type: 'info'; text: string }
+  | { type: 'data'; text: string }
+  | { type: 'dim'; text: string }
+  | { type: 'green'; text: string }
+  | { type: 'cyan'; text: string }
+  | { type: 'amber'; text: string }
+  | { type: 'red'; text: string }
+  | { type: 'sep' }
+  | { type: 'raw'; text: string }
+  | { type: 'html'; html: string };
 
 /* ── Stats line ─────────────────────────────── */
-function StatsRow({ label, value, suffix, color = 'cyan' }: { label: string; value: string | number; suffix?: string; color?: string }) {
+function StatLine({ label, value, suffix }: { label: string; value: string; suffix?: string }) {
   return (
-    <div className="flex items-baseline gap-2 py-1">
-      <span className="stat-label min-w-[120px]">{label}</span>
-      <span className="text-dots text-[var(--term-dim)]">:</span>
-      <span className={`stat-value ${color}`}>
-        {value}
-        {suffix && <span className="text-xs text-[var(--term-dim)] ml-1">{suffix}</span>}
+    <div className="terminal-line" style={{ display: 'flex', gap: 16 }}>
+      <span className="term-dim" style={{ minWidth: 140, flexShrink: 0 }}>
+        {label}
       </span>
+      <span className="term-dots term-dim">:</span>
+      <span className="term-cyan">{value}</span>
+      {suffix && <span className="term-dim" style={{ fontSize: 10 }}>{suffix}</span>}
     </div>
   );
 }
 
-/* ── Top N card (neofetch style) ────────────── */
-function TopCard({ item, rank }: { item: RankingItem; rank: number }) {
-  const maxTokens = item.totalTokens;
-  const maxSessions = item.sessions;
-  const colors = ['green', 'amber', 'cyan'] as const;
-  const rankColor = ['#33ff33', '#ffb000', '#00ffff'][rank - 1];
-  const rankLabel = ['● MASTER', '● NODE', '● PEER'][rank - 1] || `#${rank}`;
-
+/* ── Terminal output renderer ──────────────── */
+function TerminalOutput({ lines }: { lines: TermLine[] }) {
   return (
-    <div className="term-box p-3 mb-2 term-fade-in">
-      <div className="flex items-center gap-3 mb-2">
-        <span style={{ color: rankColor, fontSize: 14 }}>{['◆', '◇', '○'][rank - 1]}</span>
-        <span className="text-xs text-[var(--term-dim)] uppercase tracking-[0.15em]">{rankLabel}</span>
-      </div>
-      <div className="text-sm font-bold text-[var(--term-highlight)] mb-2">{item.name}</div>
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[var(--term-dim)] w-16">SESSIONS</span>
-          <div className="term-bar-bg flex-1 max-w-[200px]">
-            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '100%' }} />
+    <div className="terminal-output">
+      {lines.map((line, i) => {
+        if (line.type === 'sep') return <hr key={i} className="term-hr" />;
+        if (line.type === 'raw') return <div key={i} className="term-dim" style={{ whiteSpace: 'pre', lineHeight: 1.4 }}>{line.text}</div>;
+        if (line.type === 'html') return <div key={i} dangerouslySetInnerHTML={{ __html: line.html }} className="terminal-line" />;
+        return (
+          <div key={i} className={`terminal-line term-${line.type}`}>
+            {line.type === 'header' && <span className="term-arrow">▶ </span>}
+            {line.text}
           </div>
-          <span className="text-xs text-[var(--term-fg)] w-16 text-right">{item.sessions}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[var(--term-dim)] w-16">TOKENS</span>
-          <div className="term-bar-bg flex-1 max-w-[200px]">
-            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '85%' }} />
-          </div>
-          <span className="text-xs text-[var(--term-fg)] w-16 text-right">{fmt(item.totalTokens)}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[var(--term-dim)] w-16">COST</span>
-          <div className="term-bar-bg flex-1 max-w-[200px]">
-            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '60%' }} />
-          </div>
-          <span className="text-xs text-[var(--term-fg)] w-16 text-right">${item.cost.toFixed(4)}</span>
-        </div>
-      </div>
+        );
+      })}
     </div>
   );
 }
 
-/* ── Terminal Data Table ────────────────────── */
-function TermDataTable({ data }: { data: RankingItem[] }) {
-  const [sortKey, setSortKey] = useState<'sessions' | 'totalTokens' | 'cost'>('sessions');
-  const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
-
-  const sorted = useMemo(() => {
-    return [...data].sort((a, b) => {
-      return sortDir === 'desc' ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey];
-    });
-  }, [data, sortKey, sortDir]);
-
-  const toggleSort = (key: typeof sortKey) => {
-    if (sortKey === key) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
-    else { setSortKey(key); setSortDir('desc'); }
-  };
-
-  const sortArrow = (key: string) => {
-    if (sortKey !== key) return '';
-    return sortDir === 'desc' ? ' ▼' : ' ▲';
-  };
-
-  const maxVal = Math.max(...data.map(d => d[sortKey]));
-
+/* ── Terminal progress bar ──────────────────── */
+function TermProgress({ label, pct, value, color = 'green' }: { label: string; pct: number; value: string; color?: string }) {
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-3 text-xs text-[var(--term-dim)]">
-        <span className="uppercase tracking-wider">sort:</span>
-        <button onClick={() => toggleSort('sessions')} className="term-tab text-xs px-2 py-0.5">
-          <span className="tab-num">1</span> sessions{sortArrow('sessions')}
-        </button>
-        <button onClick={() => toggleSort('totalTokens')} className="term-tab text-xs px-2 py-0.5">
-          <span className="tab-num">2</span> tokens{sortArrow('totalTokens')}
-        </button>
-        <button onClick={() => toggleSort('cost')} className="term-tab text-xs px-2 py-0.5">
-          <span className="tab-num">3</span> cost{sortArrow('cost')}
-        </button>
+    <div className="term-progress-line">
+      <span className="term-dim" style={{ minWidth: 100, flexShrink: 0 }}>{label}</span>
+      <div className="term-pbar-bg">
+        <div className={`term-pbar-fill ${color}`} style={{ width: `${Math.min(pct, 100)}%` }} />
       </div>
-
-      <div className="overflow-x-auto">
-        <table className="term-table">
-          <thead>
-            <tr>
-              <th style={{ width: 36 }}>#</th>
-              <th>name</th>
-              <th style={{ width: 80 }} className="text-right">tokens</th>
-              <th style={{ width: 80 }} className="text-right">sessions</th>
-              <th style={{ width: 90 }} className="text-right">cost</th>
-              <th className="hidden md:table-cell">bar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((item, i) => {
-              const barPct = (item[sortKey] / maxVal) * 100;
-              const rankColor = item.rank === 1 ? '#33ff33' : item.rank === 2 ? '#ffb000' : item.rank === 3 ? '#00ffff' : '#555';
-              return (
-                <tr key={item.name} className="term-fade-in" style={{ animationDelay: `${i * 20}ms` }}>
-                  <td style={{ color: rankColor }}>{item.rank <= 3 ? ['●', '◆', '◇'][item.rank - 1] : `#${item.rank}`}</td>
-                  <td className="font-medium">{item.name}</td>
-                  <td className="text-right font-mono text-xs">{fmt(item.totalTokens)}</td>
-                  <td className="text-right font-mono text-xs">{item.sessions}</td>
-                  <td className="text-right font-mono text-xs text-[var(--term-amber)]">${item.cost.toFixed(4)}</td>
-                  <td className="hidden md:table-cell">
-                    <span className="mini-graph text-xs">{barChar(barPct, 15)}</span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <span className="term-fg" style={{ minWidth: 80, textAlign: 'right', fontSize: 11 }}>{value}</span>
     </div>
   );
 }
 
-/* ── Terminal Style Charts ──────────────────── */
-const chartColors = ['#33ff33', '#ffb000', '#00ffff', '#ff3333', '#ff69b4', '#aa66ff', '#ffd700', '#00ff9d'];
-
-function CostPie({ data }: { data: RankingItem[] }) {
-  const top = [...data].sort((a, b) => b.cost - a.cost).slice(0, 8);
-  const other = data.slice(8);
-  const chartData = [
-    ...top.map(r => ({ name: r.name, value: r.cost })),
-    { name: 'others', value: other.reduce((s, r) => s + r.cost, 0) },
-  ];
-
+/* ── ASCII table ────────────────────────────── */
+function AsciiTable({
+  headers,
+  rows,
+  widths,
+}: {
+  headers: string[];
+  rows: string[][];
+  widths: number[];
+}) {
+  const hLine = '─'.repeat(widths.reduce((a, b) => a + b + 3, 1));
   return (
-    <TermBox title="cost distribution">
-      <ResponsiveContainer width="100%" height={260}>
-        <PieChart>
-          <Pie data={chartData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={1} dataKey="value">
-            {chartData.map((_, i) => (
-              <Cell key={i} fill={chartColors[i % chartColors.length]} stroke="#0c0c0c" strokeWidth={2} />
-            ))}
-          </Pie>
-          <Tooltip
-            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
-            formatter={(value: number) => [`$${value.toFixed(4)}`, 'cost']}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className="flex flex-wrap gap-2 mt-2 text-xs font-mono">
-        {chartData.map((item, i) => (
-          <div key={item.name} className="flex items-center gap-1 text-[var(--term-dim)]">
-            <span style={{ color: chartColors[i % chartColors.length] }}>■</span>
-            <span>{item.name}</span>
-          </div>
-        ))}
-      </div>
-    </TermBox>
-  );
-}
-
-function SessionsBar({ data }: { data: RankingItem[] }) {
-  const top15 = [...data].sort((a, b) => b.sessions - a.sessions).slice(0, 15);
-
-  return (
-    <TermBox title="sessions top 15">
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={top15} layout="vertical" margin={{ left: 20, right: 10 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-          <XAxis type="number" tick={{ fill: '#555', fontSize: 11, fontFamily: 'monospace' }} />
-          <YAxis type="category" dataKey="name" tick={{ fill: '#888', fontSize: 11, fontFamily: 'monospace' }} width={70} />
-          <Tooltip
-            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
-            formatter={(value: number) => [value, 'sessions']}
-          />
-          <Bar dataKey="sessions" radius={[0, 2, 2, 0]}>
-            {top15.map((_, i) => (
-              <Cell key={i} fill={chartColors[i % chartColors.length]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </TermBox>
-  );
-}
-
-function EfficiencyChart({ data }: { data: RankingItem[] }) {
-  const top20 = [...data]
-    .filter(r => r.sessions >= 5)
-    .map(r => ({ name: r.name, value: Math.round(r.totalTokens * 0.4 / r.sessions) }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 20);
-
-  return (
-    <TermBox title="tokens per session (est.)">
-      <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={top20} layout="vertical" margin={{ left: 20, right: 10 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-          <XAxis type="number" tick={{ fill: '#555', fontSize: 11, fontFamily: 'monospace' }} />
-          <YAxis type="category" dataKey="name" tick={{ fill: '#888', fontSize: 11, fontFamily: 'monospace' }} width={70} />
-          <Tooltip
-            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
-            formatter={(value: number) => [value.toLocaleString(), 'tokens/session']}
-          />
-          <Bar dataKey="value" radius={[0, 2, 2, 0]}>
-            {top20.map((_, i) => (
-              <Cell key={i} fill={`hsl(${120 + i * 8}, 100%, ${50 + i}%)`} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </TermBox>
-  );
-}
-
-/* ── Full ranking table card ────────────────── */
-function FullRankingTable({ data }: { data: RankingItem[] }) {
-  return (
-    <TermBox title="full ranking">
-      <div className="overflow-y-auto max-h-[350px]">
-        <table className="term-table">
-          <thead>
-            <tr>
-              <th style={{ width: 32 }}>#</th>
-              <th>name</th>
-              <th className="text-right">tokens</th>
-              <th className="text-right">sessions</th>
-              <th className="text-right">cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item) => {
-              const c = item.rank === 1 ? '#33ff33' : item.rank === 2 ? '#ffb000' : item.rank === 3 ? '#00ffff' : '#888';
-              return (
-                <tr key={item.name}>
-                  <td style={{ color: c }}>#{item.rank}</td>
-                  <td>{item.name}</td>
-                  <td className="text-right font-mono text-[var(--term-cyan)]">{fmt(item.totalTokens)}</td>
-                  <td className="text-right font-mono">{item.sessions}</td>
-                  <td className="text-right font-mono text-[var(--term-amber)]">${item.cost.toFixed(4)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </TermBox>
-  );
-}
-
-/* ── Tab nav item ───────────────────────────── */
-function NavTab({ num, label, active, onClick }: { num: number; label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`term-tab ${active ? 'active' : ''}`}
-    >
-      <span className="tab-num">[{num}]</span> {label}
-    </button>
-  );
-}
-
-/* ── Status bar ─────────────────────────────── */
-function StatusBar({ text, items }: { text?: string; items?: { label: string; value: string }[] }) {
-  return (
-    <div className="flex items-center gap-4 text-[10px] text-[var(--term-dim)] font-mono border-t border-[var(--term-border)] pt-2 mt-4">
-      {text && <span>{text}</span>}
-      {items?.map((item, i) => (
-        <span key={i}>
-          <span className="text-[var(--term-green)]">{item.label}</span>={item.value}
-        </span>
-      ))}
-      <span className="cursor-blink ml-auto" />
-    </div>
+    <pre className="term-table-pre">
+      {'┌' + '─'.repeat(widths.reduce((a, b) => a + b + 3, 1) - 2) + '┐'}{'\n'}
+      {'│ ' + headers.map((h, i) => h.padEnd(widths[i])).join(' │ ') + ' │'}{'\n'}
+      {'├' + widths.map(w => '─'.repeat(w + 2)).join('┼') + '┤'}{'\n'}
+      {rows.map((row, ri) =>
+        '│ ' + row.map((cell, ci) => cell.padEnd(widths[ci])).join(' │ ') + ' │' + (ri < rows.length - 1 ? '\n' : '')
+      ).join('\n')}{'\n'}
+      {'└' + widths.map(w => '─'.repeat(w + 2)).join('┴') + '┘'}
+    </pre>
   );
 }
 
@@ -376,160 +149,415 @@ function StatusBar({ text, items }: { text?: string; items?: { label: string; va
 export default function Home() {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState<'dashboard' | 'ranking' | 'charts'>('dashboard');
+  const [bootPhase, setBootPhase] = useState<'booting' | 'ready'>('booting');
+  const [outputLines, setOutputLines] = useState<TermLine[]>([]);
+  const [cmdHistory, setCmdHistory] = useState<string[]>([]);
+  const [cmdIdx, setCmdIdx] = useState(-1);
+  const [input, setInput] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [bootDots, setBootDots] = useState('');
 
-  useEffect(() => {
-    fetch('./data/data.json')
-      .then(r => r.json())
-      .then(d => { setData(d); setLoading(false); })
-      .catch(() => setLoading(false));
+  const appendLines = useCallback((...newLines: TermLine[]) => {
+    setOutputLines(prev => [...prev, ...newLines]);
   }, []);
 
-  /* ── Loading ── */
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <TermBox title="booting" className="text-center w-full max-w-md">
-          <AsciiBanner />
-          <hr className="term-sep" />
-          <div className="text-xs text-[var(--term-dim)] mb-3">loading data from feishu sheets...</div>
-          <div className="term-bar-bg w-full max-w-xs mx-auto">
-            <div className="term-bar-fill green" style={{ width: '60%' }} />
-          </div>
-          <div className="text-xs text-[var(--term-green)] mt-2 text-blink">⟁</div>
-        </TermBox>
-      </div>
+  /* ── Boot sequence ── */
+  useEffect(() => {
+    const bootMsg1: TermLine[] = [
+      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] initializing TOKEN VISION monitor...' },
+      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] loading kernel modules...' },
+      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] connecting to data sources...' },
+    ];
+    setOutputLines(bootMsg1);
+
+    const t1 = setTimeout(() => {
+      appendLines(
+        { type: 'green', text: '[OK] kernel modules loaded' },
+        { type: 'green', text: '[OK] feishu sheets interface ready' },
+        { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] fetching telemetry data...' },
+      );
+    }, 400);
+
+    const t2 = setTimeout(() => {
+      fetch('./data/data.json')
+        .then(r => r.json())
+        .then((d: Data) => {
+          setData(d);
+          setLoading(false);
+          appendLines(
+            { type: 'green', text: '[OK] data received — ' + d.stats.totalPeople + ' nodes online' },
+            { type: 'sep' },
+          );
+          setBootPhase('ready');
+        })
+        .catch(() => {
+          setLoading(false);
+          appendLines(
+            { type: 'red', text: '[ERR] failed to fetch telemetry data' },
+            { type: 'red', text: '[ERR] run `npm run fetch-data` to populate data' },
+            { type: 'sep' },
+          );
+          setBootPhase('ready');
+        });
+    }, 800);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [appendLines]);
+
+  /* ── Cursor blink for boot ── */
+  useEffect(() => {
+    if (bootPhase !== 'booting') return;
+    const interval = setInterval(() => {
+      setBootDots(d => d.length >= 3 ? '' : d + '.');
+    }, 400);
+    return () => clearInterval(interval);
+  }, [bootPhase]);
+
+  /* ── Auto-scroll ── */
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [outputLines]);
+
+  /* ── Command handler ── */
+  const execCommand = useCallback((cmd: string) => {
+    const trimmed = cmd.trim().toLowerCase();
+    const parts = trimmed.split(/\s+/);
+    const command = parts[0];
+    const arg = parts[1];
+
+    setCmdHistory(h => [...h, cmd]);
+    setCmdIdx(-1);
+
+    appendLines(
+      { type: 'raw', text: '$ ' + cmd },
     );
-  }
 
-  /* ── Error ── */
-  if (!data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <TermBox title="error" className="text-center">
-          <div className="text-[var(--term-red)] text-lg mb-2">✗</div>
-          <div className="text-sm text-[var(--term-fg)] mb-1">Failed to load data.</div>
-          <div className="text-xs text-[var(--term-dim)]">Run `node scripts/fetch-data.js` first.</div>
-        </TermBox>
-      </div>
-    );
-  }
+    if (!data && command !== 'help' && command !== 'clear') {
+      appendLines({ type: 'red', text: 'error: data not loaded. wait for boot sequence.' });
+      return;
+    }
 
-  const { stats, top5, ranking } = data;
+    const { stats, ranking, top5 } = data || { stats: null, ranking: [], top5: [] };
 
+    switch (command) {
+      case 'dashboard': {
+        appendLines(
+          { type: 'header', text: 'SYSTEM OVERVIEW' },
+          { type: 'sep' },
+        );
+        if (stats) {
+          appendLines(
+            { type: 'raw', text: '' },
+            { type: 'html', html: `<span class="ascii-banner" style="font-size:9px;line-height:1.15;color:var(--c-green)">${[
+              '╔══════════════════════════════════════════════╗',
+              '║  ████████  ██  ████████  TOKEN VISION v1.0  ║',
+              '║  ██░░░░██  ██  ██░░░░    HERMES AI          ║',
+              '║  ████████  ██  ███████   TOKEN CONSUMPTION  ║',
+              '║  ██░░░░░░  ██  ██░░░░    MONITOR v1.0       ║',
+              '║  ██░░░░░░  ██  ████████                      ║',
+              '╚══════════════════════════════════════════════╝',
+            ].join('\n')}</span>` },
+            { type: 'raw', text: '' },
+            { type: 'dim', text: '  updated: ' + fmtDate(data!.updatedAt) + '   |   nodes: ' + stats.totalPeople + ' active' },
+            { type: 'sep' },
+          );
+
+          // Stats grid
+          appendLines(
+            { type: 'raw', text: '' },
+            { type: 'html', html: [
+              '<div class="stats-grid">',
+              `  <div class="stat-card"><span class="stat-label">total tokens</span><span class="stat-value cyan">${fmt(stats.totalTokens)}</span></div>`,
+              `  <div class="stat-card"><span class="stat-label">total cost</span><span class="stat-value amber">$${stats.totalCost.toFixed(2)}</span></div>`,
+              `  <div class="stat-card"><span class="stat-label">sessions</span><span class="stat-value green">${stats.totalSessions}</span></div>`,
+              `  <div class="stat-card"><span class="stat-label">avg tokens/user</span><span class="stat-value cyan">${fmt(Math.round(stats.avgTokensPerPerson))}</span></div>`,
+              '</div>',
+            ].join('\n') },
+            { type: 'raw', text: '' },
+            { type: 'sep' },
+          );
+        }
+
+        // Top 3
+        if (top5 && top5.length >= 3) {
+          appendLines({ type: 'header', text: 'TOP OPERATORS' });
+          const maxT = Math.max(...top5.slice(0, 3).map(r => r.totalTokens));
+          const maxS = Math.max(...top5.slice(0, 3).map(r => r.sessions));
+          const maxC = Math.max(...top5.slice(0, 3).map(r => r.cost));
+          const badges = ['● MASTER', '◆ NODE', '○ PEER'];
+          const colors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+          top5.slice(0, 3).forEach((item, i) => {
+            appendLines(
+              { type: 'raw', text: '' },
+              { type: 'html', html: [
+                `<div class="top-card">`,
+                `  <div style="color:${colors[i]};font-size:11px;margin-bottom:4px">${badges[i]}</div>`,
+                `  <div style="font-weight:700;margin-bottom:6px">${item.name}</div>`,
+                `  <div class="top-bar-row"><span>sessions</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.sessions / maxS) * 100}%"></div></div><span>${item.sessions}</span></div>`,
+                `  <div class="top-bar-row"><span>tokens</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.totalTokens / maxT) * 100}%"></div></div><span>${fmt(item.totalTokens)}</span></div>`,
+                `  <div class="top-bar-row"><span>cost</span><div class="term-pbar-bg" style="flex:1;max-width:200px"><div class="term-pbar-fill ${['green','amber','cyan'][i]}" style="width:${(item.cost / maxC) * 100}%"></div></div><span>$${item.cost.toFixed(4)}</span></div>`,
+                `</div>`,
+              ].join('\n') },
+            );
+          });
+        }
+        appendLines({ type: 'raw', text: '' });
+        break;
+      }
+
+      case 'top': {
+        const count = parseInt(arg || '10');
+        const topN = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens).slice(0, Math.min(count, 50));
+        appendLines({ type: 'header', text: `TOP ${topN.length} BY TOKENS` }, { type: 'sep' });
+        const maxV = Math.max(...topN.map(r => r.totalTokens));
+        topN.forEach((item, i) => {
+          const pct = (item.totalTokens / maxV) * 100;
+          const badge = i === 0 ? '●' : i === 1 ? '◆' : i === 2 ? '○' : ' ';
+          const clr = i === 0 ? 'green' : i === 1 ? 'amber' : i === 2 ? 'cyan' : 'dim';
+          appendLines(
+            { type: 'html', html: `<div class="top-line"><span class="term-${clr}" style="min-width:16px;font-weight:700">${badge}</span><span style="min-width:80px">${item.name}</span><div class="term-pbar-bg" style="flex:1"><div class="term-pbar-fill ${clr}" style="width:${pct}%"></div></div><span style="min-width:70px;text-align:right;font-size:11px" class="term-${clr}">${fmt(item.totalTokens)}</span><span style="min-width:36px;text-align:right;font-size:10px" class="term-dim">${item.sessions}s</span></div>` },
+          );
+        });
+        appendLines({ type: 'raw', text: '' });
+        break;
+      }
+
+      case 'ranking': {
+        const sorted = [...ranking].sort((a, b) => a.rank - b.rank);
+        appendLines({ type: 'header', text: 'FULL RANKING TABLE' }, { type: 'sep' });
+        appendLines(
+          { type: 'html', html: `<div class="ascii-table-wrap">${sorted.map(r => {
+            const rankStr = r.rank <= 3 ? ['●','◆','○'][r.rank - 1] : '#' + String(r.rank).padStart(2);
+            return `${rankStr.padStart(3)}  ${r.name.padEnd(14)} ${fmt(r.totalTokens).padStart(8)}  ${String(r.sessions).padStart(4)}s  $${r.cost.toFixed(4).padStart(9)}`;
+          }).join('\n')}</div>` },
+        );
+        appendLines({ type: 'raw', text: '' });
+        break;
+      }
+
+      case 'charts': {
+        appendLines({ type: 'header', text: 'TOKEN DISTRIBUTION' }, { type: 'sep' });
+        appendLines({ type: 'raw', text: '' });
+
+        // Cost donut using CSS conic gradient
+        const sortedByCost = [...ranking].sort((a, b) => b.cost - a.cost);
+        const chartColors = ['#33ff33', '#ffb000', '#00ffff', '#ff3333', '#ff69b4', '#aa66ff', '#ffd700', '#00ff9d', '#555555'];
+        const topCost = sortedByCost.slice(0, 8);
+        const totalCost = sortedByCost.reduce((s, r) => s + r.cost, 0);
+        const gradientStops = topCost.map((r, i) => {
+          const pct = (r.cost / totalCost) * 100;
+          const start = topCost.slice(0, i).reduce((s, r2) => s + (r2.cost / totalCost) * 100, 0);
+          return `${chartColors[i % chartColors.length]} ${start}% ${start + pct}%`;
+        }).join(', ');
+        // Remaining goes to "others"
+        const othersPct = sortedByCost.slice(8).reduce((s, r) => s + (r.cost / totalCost) * 100, 0);
+        const finalGradient = gradientStops + (othersPct > 0 ? `, #333 ${100 - othersPct}% 100%` : '');
+
+        appendLines({
+          type: 'html', html: [
+            '<div class="chart-area">',
+            '  <div class="donut-container">',
+            `    <div class="donut" style="background: conic-gradient(${finalGradient})">`,
+            '      <div class="donut-hole"><span class="term-amber">$' + totalCost.toFixed(2) + '</span><span class="term-dim" style="font-size:9px">total</span></div>',
+            '    </div>',
+            '  </div>',
+            '  <div class="chart-legend">',
+            ...topCost.map((r, i) =>
+              `  <div class="legend-item"><span style="color:${chartColors[i]}">■</span><span>${r.name}</span><span class="term-dim">${(r.cost / totalCost * 100).toFixed(1)}%</span></div>`
+            ),
+            (othersPct > 0 ? `  <div class="legend-item"><span style="color:#555">■</span><span>others</span><span class="term-dim">${othersPct.toFixed(1)}%</span></div>` : ''),
+            '  </div>',
+            '</div>',
+          ].join('\n')
+        });
+
+        appendLines({ type: 'raw', text: '' }, { type: 'sep' }, { type: 'header', text: 'SESSIONS TOP 15' }, { type: 'sep' });
+        const topSess = [...ranking].sort((a, b) => b.sessions - a.sessions).slice(0, 15);
+        const maxSess = Math.max(...topSess.map(r => r.sessions));
+        topSess.forEach(item => {
+          const pct = (item.sessions / maxSess) * 100;
+          appendLines(
+            { type: 'html', html: `<div class="top-line"><span style="min-width:80px">${item.name}</span><div class="term-pbar-bg" style="flex:1"><div class="term-pbar-fill" style="width:${pct}%;background:hsl(${120 + (item.sessions / maxSess) * 60}, 100%, 50%)"></div></div><span style="min-width:36px;text-align:right;font-size:11px">${item.sessions}</span></div>` },
+          );
+        });
+
+        appendLines({ type: 'raw', text: '' }, { type: 'sep' }, { type: 'header', text: 'TOKENS PER SESSION (EST.)' }, { type: 'sep' });
+        const topEff = [...ranking]
+          .filter(r => r.sessions >= 5)
+          .map(r => ({ name: r.name, value: Math.round(r.totalTokens * 0.4 / r.sessions) }))
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 15);
+        const maxEff = Math.max(...topEff.map(r => r.value));
+        topEff.forEach(item => {
+          const pct = (item.value / maxEff) * 100;
+          appendLines(
+            { type: 'html', html: `<div class="top-line"><span style="min-width:80px">${item.name}</span><div class="term-pbar-bg" style="flex:1"><div class="term-pbar-fill" style="width:${pct}%;background:hsl(${180 + (item.value / maxEff) * 60}, 100%, 50%)"></div></div><span style="min-width:60px;text-align:right;font-size:11px">${item.value.toLocaleString()}</span></div>` },
+          );
+        });
+
+        appendLines({ type: 'raw', text: '' });
+        break;
+      }
+
+      case 'help': {
+        appendLines(
+          { type: 'header', text: 'AVAILABLE COMMANDS' },
+          { type: 'sep' },
+          { type: 'raw', text: '  dashboard  —  System overview with top 3 operators' },
+          { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
+          { type: 'raw', text: '  ranking    —  Full ranking table' },
+          { type: 'raw', text: '  charts     —  Token distribution & session charts' },
+          { type: 'raw', text: '  help       —  Show this help' },
+          { type: 'raw', text: '  clear      —  Clear terminal screen' },
+          { type: 'raw', text: '  about      —  About TOKEN VISION' },
+          { type: 'sep' },
+          { type: 'dim', text: '  Tip: press ↑/↓ to navigate command history. Tab to autocomplete.' },
+          { type: 'raw', text: '' },
+        );
+        break;
+      }
+
+      case 'about': {
+        appendLines(
+          { type: 'header', text: 'ABOUT TOKEN VISION' },
+          { type: 'sep' },
+          { type: 'raw', text: '  TOKEN VISION v1.0.0' },
+          { type: 'raw', text: '  Hermes AI Cross-Instance Token Consumption Monitor' },
+          { type: 'raw', text: '' },
+          { type: 'dim', text: '  Built with: Next.js + Tailwind CSS + TypeScript' },
+          { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
+          { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 2h)' },
+          { type: 'raw', text: '' },
+          { type: 'raw', text: '  Commands: dashboard | top | ranking | charts | help | clear' },
+          { type: 'raw', text: '' },
+        );
+        break;
+      }
+
+      case 'clear': {
+        setOutputLines([]);
+        return;
+      }
+
+      default: {
+        appendLines(
+          { type: 'red', text: 'error: unknown command "' + command + '". type `help` for available commands.' },
+          { type: 'raw', text: '' },
+        );
+      }
+    }
+  }, [data, appendLines]);
+
+  /* ── Input handling ── */
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && input.trim()) {
+      execCommand(input);
+      setInput('');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (cmdHistory.length > 0) {
+        const newIdx = cmdIdx === -1 ? cmdHistory.length - 1 : Math.max(0, cmdIdx - 1);
+        setCmdIdx(newIdx);
+        setInput(cmdHistory[newIdx]);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (cmdIdx >= 0) {
+        const newIdx = cmdIdx + 1;
+        if (newIdx >= cmdHistory.length) {
+          setCmdIdx(-1);
+          setInput('');
+        } else {
+          setCmdIdx(newIdx);
+          setInput(cmdHistory[newIdx]);
+        }
+      }
+    }
+  };
+
+  /* ── Auto-run dashboard on boot ── */
+  useEffect(() => {
+    if (bootPhase === 'ready' && data) {
+      const t = setTimeout(() => {
+        execCommand('dashboard');
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [bootPhase, data]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* ── Click to focus ── */
+  const focusInput = () => inputRef.current?.focus();
+
+  /* ── Render ── */
   return (
-    <div className="min-h-screen p-4 max-w-7xl mx-auto">
-      {/* ── Header ── */}
-      <TermBox className="mb-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="text-xs text-[var(--term-green)] mb-1">
-              <span className="term-prompt">./token-vision --monitor</span>
-            </div>
-            <AsciiBanner />
-            <div className="text-[10px] text-[var(--term-dim)] tracking-[0.2em] uppercase">
-              Hermes AI · Cross-Instance Token Consumption Monitor
-            </div>
-          </div>
-          <div className="text-right text-[10px] text-[var(--term-dim)] font-mono">
-            <div>UPDATED {fmtDate(data.updatedAt)}</div>
-            <div className="text-[var(--term-green)]">{stats.totalPeople} ACTIVE USERS</div>
-          </div>
+    <div className="terminal-root" onClick={focusInput}>
+      {/* Title bar */}
+      <div className="term-titlebar">
+        <div className="term-titlebar-dots">
+          <span className="dot dot-red" />
+          <span className="dot dot-amber" />
+          <span className="dot dot-green" />
         </div>
-      </TermBox>
-
-      {/* ── Navigation ── */}
-      <div className="flex gap-1 mb-4 flex-wrap">
-        <NavTab num={1} label="DASHBOARD" active={activeView === 'dashboard'} onClick={() => setActiveView('dashboard')} />
-        <NavTab num={2} label="RANKING" active={activeView === 'ranking'} onClick={() => setActiveView('ranking')} />
-        <NavTab num={3} label="CHARTS" active={activeView === 'charts'} onClick={() => setActiveView('charts')} />
+        <span className="term-titlebar-text">TOKEN VISION — Hermes AI Token Monitor</span>
+        <div style={{ width: 60 }} />
       </div>
 
-      {/* ── Dashboard ── */}
-      {activeView === 'dashboard' && (
-        <>
-          {/* Stats */}
-          <TermBox title="summary" className="mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              <div>
-                <StatsRow label="TOTAL TOKENS" value={fmt(stats.totalTokens)} color="cyan" />
-                <StatsRow label="TOTAL COST" value={`$${stats.totalCost}`} color="amber" />
-              </div>
-              <div>
-                <StatsRow label="TOTAL SESSIONS" value={stats.totalSessions} color="green" />
-                <StatsRow label="ACTIVE USERS" value={stats.totalPeople} color="green" />
-              </div>
-              <div>
-                <StatsRow label="AVG TOKENS/USER" value={fmt(stats.avgTokensPerPerson)} color="cyan" />
-                <StatsRow label="AVG COST/USER" value={`$${stats.avgCostPerPerson}`} color="amber" />
-              </div>
-              <div>
-                <StatsRow label="AVG SESSIONS/USER" value={stats.avgSessionsPerPerson} color="green" />
-              </div>
-            </div>
-          </TermBox>
+      {/* Output */}
+      <div className="term-body" ref={scrollRef}>
+        {/* Boot phase output */}
+        {outputLines.map((line, i) => {
+          if (line.type === 'sep') return <hr key={i} className="term-hr" />;
+          if (line.type === 'raw') return <div key={i} className="term-line term-dim" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{line.text}</div>;
+          if (line.type === 'html') return <div key={i} className="term-line" dangerouslySetInnerHTML={{ __html: line.html }} />;
+          return <div key={i} className={`term-line term-${line.type}`}>{line.text}</div>;
+        })}
 
-          {/* Top 3 */}
-          <div className="mb-4">
-            <div className="text-xs text-[var(--term-dim)] uppercase tracking-[0.15em] mb-2">
-              ▸ top operators
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {top5.slice(0, 3).map((item, i) => (
-                <TopCard key={item.name} item={item} rank={i + 1} />
-              ))}
-            </div>
+        {/* Boot phase cursor */}
+        {bootPhase === 'booting' && (
+          <div className="term-line term-dim" style={{ display: 'flex', gap: 4 }}>
+            <span className="term-green">⟁</span>
+            <span>booting{bootDots}</span>
           </div>
+        )}
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <CostPie data={ranking} />
-            <SessionsBar data={ranking} />
+        {/* Prompt */}
+        {bootPhase === 'ready' && (
+          <div className="term-prompt-line">
+            <span className="term-prompt-label">./token-vision</span>
+            <span className="term-prompt-sep">λ</span>
+            <input
+              ref={inputRef}
+              type="text"
+              className="term-input"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="type `help` for commands..."
+              spellCheck={false}
+              autoComplete="off"
+              autoFocus
+            />
           </div>
+        )}
 
-          <StatusBar
-            items={[
-              { label: 'view', value: 'dashboard' },
-              { label: 'users', value: String(stats.totalPeople) },
-              { label: 'total_tokens', value: fmt(stats.totalTokens) },
-            ]}
-          />
-        </>
-      )}
+        {/* Bottom padding */}
+        <div style={{ height: 4 }} />
+      </div>
 
-      {/* ── Ranking ── */}
-      {activeView === 'ranking' && (
-        <TermBox title="player ranking" className="mb-4">
-          <TermDataTable data={ranking} />
-          <StatusBar
-            items={[
-              { label: 'view', value: 'ranking' },
-              { label: 'entries', value: String(ranking.length) },
-              { label: 'sort', value: 'click tabs to change' },
-            ]}
-          />
-        </TermBox>
-      )}
-
-      {/* ── Charts ── */}
-      {activeView === 'charts' && (
-        <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <CostPie data={ranking} />
-            <SessionsBar data={ranking} />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <EfficiencyChart data={ranking} />
-            <FullRankingTable data={ranking} />
-          </div>
-          <StatusBar
-            items={[
-              { label: 'view', value: 'charts' },
-              { label: 'users', value: String(stats.totalPeople) },
-            ]}
-          />
-        </>
-      )}
+      {/* Status bar */}
+      <div className="term-statusbar">
+        <span className="term-dim">NORMAL</span>
+        <span className="term-green">●</span>
+        <span className="term-dim">
+          {data
+            ? `${data.stats.totalPeople} nodes · ${fmt(data.stats.totalTokens)} tokens · updated ${fmtDate(data.updatedAt)}`
+            : 'initializing...'}
+        </span>
+        {bootPhase === 'ready' && <span className="cursor-blink-sm" />}
+      </div>
     </div>
   );
 }
