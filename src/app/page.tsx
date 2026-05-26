@@ -553,6 +553,7 @@ export default function Home() {
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
+          { type: 'raw', text: '  search     —  Search for specific user by name' },
           { type: 'raw', text: '  refresh    —  Re-fetch telemetry data from server' },
           { type: 'raw', text: '  help       —  Show this help' },
           { type: 'raw', text: '  clear      —  Clear terminal screen' },
@@ -575,7 +576,7 @@ export default function Home() {
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
           { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 15min)' },
           { type: 'raw', text: '' },
-          { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | refresh | help | clear' },
+          { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | search | refresh | help | clear' },
           { type: 'raw', text: '' },
         );
         break;
