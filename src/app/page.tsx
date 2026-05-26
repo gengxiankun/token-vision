@@ -402,6 +402,28 @@ export default function Home() {
         break;
       }
 
+      case 'refresh': {
+        appendLines(
+          { type: 'amber', text: '[REFRESH] re-fetching telemetry data...' },
+        );
+        fetch('./data/data.json')
+          .then(r => r.json())
+          .then((d: Data) => {
+            setData(d);
+            appendLines(
+              { type: 'green', text: '[OK] data refreshed — ' + d.stats.totalPeople + ' nodes, ' + fmt(d.stats.totalTokens) + ' tokens' },
+              { type: 'sep' },
+            );
+          })
+          .catch(() => {
+            appendLines(
+              { type: 'red', text: '[ERR] failed to refresh data' },
+              { type: 'raw', text: '' },
+            );
+          });
+        break;
+      }
+
       case 'help': {
         appendLines(
           { type: 'header', text: 'AVAILABLE COMMANDS' },
@@ -410,6 +432,7 @@ export default function Home() {
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
+          { type: 'raw', text: '  refresh    —  Re-fetch telemetry data from server' },
           { type: 'raw', text: '  help       —  Show this help' },
           { type: 'raw', text: '  clear      —  Clear terminal screen' },
           { type: 'raw', text: '  about      —  About TOKEN VISION' },
@@ -431,7 +454,7 @@ export default function Home() {
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
           { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 2h)' },
           { type: 'raw', text: '' },
-          { type: 'raw', text: '  Commands: dashboard | top | ranking | charts | help | clear' },
+          { type: 'raw', text: '  Commands: dashboard | top | ranking | charts | refresh | help | clear' },
           { type: 'raw', text: '' },
         );
         break;
