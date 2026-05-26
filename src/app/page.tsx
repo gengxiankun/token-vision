@@ -349,7 +349,7 @@ export default function Home() {
   const [activeView, setActiveView] = useState<'dashboard' | 'ranking' | 'charts'>('dashboard');
 
   useEffect(() => {
-    fetch('/data/data.json')
+    fetch('./data/data.json')
       .then(r => r.json())
       .then(d => {
         setData(d);
