@@ -252,6 +252,20 @@ body {
   margin-bottom: 6px;
 }
 
+/* Tablet: 3 columns */
+@media (max-width: 1024px) {
+  .top-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 640px) {
+  .top-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .top-card {
   border: 1px solid var(--c-border);
   padding: 10px 12px;

@@ -305,6 +305,7 @@ export default function Home() {
               `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
               `  </div>`,
               `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
               `</div>`,
@@ -349,7 +350,7 @@ export default function Home() {
         break;
       }
 
-      case 'cards': {
+      case 'search': {
         appendLines(
           { type: 'header', text: 'ALL OPERATORS (' + ranking.length + ')' },
           { type: 'sep' },
@@ -375,6 +376,7 @@ export default function Home() {
             `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
             `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
             `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
             `  </div>`,
             `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
             `</div>`,
@@ -382,6 +384,60 @@ export default function Home() {
         });
         rows.push('</div>');
         appendLines(
+          { type: 'html', html: rows.join('\n') },
+          { type: 'raw', text: '' },
+        );
+        break;
+      }
+
+      case 'search': {
+        const query = (arg || '').toLowerCase().trim();
+        if (!query) {
+          appendLines(
+            { type: 'amber', text: 'usage: search <name>  —  search for an operator by name' },
+            { type: 'raw', text: '' },
+          );
+          break;
+        }
+        const matches = ranking.filter(r => r.name.toLowerCase().includes(query));
+        if (matches.length === 0) {
+          appendLines(
+            { type: 'amber', text: 'no results found for: ' + query },
+            { type: 'raw', text: '' },
+          );
+          break;
+        }
+        const allSorted = [...matches].sort((a, b) => b.totalTokens - a.totalTokens);
+        const maxTokS = Math.max(...allSorted.map(r => r.totalTokens));
+        const badges = ['●', '◆', '○'];
+        const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+        const colors = ['green', 'amber', 'cyan'];
+        const rows: string[] = ['<div class="top-grid">'];
+        allSorted.forEach((item, i) => {
+          const badge = i < 3 ? badges[i] : `#${i + 1}`;
+          const badgeColor = i < 3 ? hexColors[i] : 'var(--c-dim)';
+          const clr = i < 3 ? colors[i] : 'dim';
+          const tokPct = (item.totalTokens / maxTokS) * 100;
+          rows.push(
+            `<div class="top-card">`,
+            `  <div class="top-card-header">`,
+            `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
+            `    <span class="top-card-name">${item.name}</span>`,
+            `  </div>`,
+            `  <div class="top-card-metrics">`,
+            `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+            `  </div>`,
+            `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
+            `</div>`,
+          );
+        });
+        rows.push('</div>');
+        appendLines(
+          { type: 'header', text: 'SEARCH RESULTS (' + matches.length + ' match' + (matches.length > 1 ? 'es' : '') + ')' },
+          { type: 'sep' },
           { type: 'html', html: rows.join('\n') },
           { type: 'raw', text: '' },
         );
@@ -493,6 +549,7 @@ export default function Home() {
           { type: 'sep' },
           { type: 'raw', text: '  dashboard  —  System overview with top 10 operators' },
           { type: 'raw', text: '  cards      —  Show ALL operators as card grid' },
+          { type: 'raw', text: '  search     —  Search operators by name (e.g. search alice)' },
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
