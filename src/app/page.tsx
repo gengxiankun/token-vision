@@ -382,7 +382,7 @@ export default function Home() {
         });
         rows.push('</div>');
         appendLines(
-          { type: 'html', html: rows.join('\\n') },
+          { type: 'html', html: rows.join('\n') },
           { type: 'raw', text: '' },
         );
         break;
