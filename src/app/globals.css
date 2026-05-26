@@ -2,152 +2,255 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Terminal Theme ────────────────────────── */
 :root {
-  --neon-cyan: #00f0ff;
-  --neon-magenta: #ff00ff;
-  --neon-purple: #7b2fff;
-  --neon-green: #00ff9d;
-  --bg-dark: #0a0a1a;
-  --bg-card: rgba(15, 15, 35, 0.85);
-  --border-glow: rgba(0, 240, 255, 0.2);
+  --term-bg: #0c0c0c;
+  --term-fg: #c8c8c8;
+  --term-green: #33ff33;
+  --term-amber: #ffb000;
+  --term-cyan: #00ffff;
+  --term-red: #ff3333;
+  --term-dim: #555555;
+  --term-border: #333333;
+  --term-highlight: #ffffff;
+  --term-selection: rgba(51, 255, 51, 0.15);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--bg-dark);
-  color: #e0e0ff;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--term-bg);
+  color: var(--term-fg);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
-/* Cyber grid background */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  z-index: -2;
-  pointer-events: none;
-}
-
-/* Glow dots */
+/* ── Scanline overlay ──────────────────────── */
 body::after {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background:
-    radial-gradient(2px 2px at 20% 30%, rgba(0, 240, 255, 0.5), transparent),
-    radial-gradient(2px 2px at 80% 20%, rgba(255, 0, 255, 0.5), transparent),
-    radial-gradient(2px 2px at 40% 70%, rgba(123, 47, 255, 0.4), transparent),
-    radial-gradient(2px 2px at 90% 60%, rgba(0, 255, 157, 0.4), transparent),
-    radial-gradient(1px 1px at 10% 80%, rgba(0, 240, 255, 0.3), transparent),
-    radial-gradient(1px 1px at 60% 40%, rgba(255, 0, 255, 0.3), transparent),
-    radial-gradient(1px 1px at 30% 50%, rgba(123, 47, 255, 0.3), transparent),
-    radial-gradient(1px 1px at 70% 90%, rgba(0, 255, 157, 0.3), transparent),
-    radial-gradient(1px 1px at 50% 10%, rgba(0, 240, 255, 0.2), transparent);
-  background-size: 200px 200px;
-  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
   pointer-events: none;
+  z-index: 9999;
 }
 
-.neon-text {
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ── CRT vignette ──────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: 9998;
 }
 
-.neon-text-green {
-  background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ── Terminal cursor blink ─────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
-.glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-glow);
-  border-radius: 16px;
-  transition: all 0.3s ease;
+.cursor-blink::after {
+  content: '█';
+  color: var(--term-green);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
 }
 
-.glass-card:hover {
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
-}
-
-.glow-border {
+/* ── Box frame ─────────────────────────────── */
+.term-box {
+  border: 1px solid var(--term-border);
+  background: rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
-.glow-border::before {
-  content: '';
+.term-box-top {
+  border-top: 1px solid var(--term-border);
+  border-left: 1px solid var(--term-border);
+  border-right: 1px solid var(--term-border);
+}
+
+.term-box-bottom {
+  border-bottom: 1px solid var(--term-border);
+  border-left: 1px solid var(--term-border);
+  border-right: 1px solid var(--term-border);
+}
+
+.term-title-bar {
   position: absolute;
-  top: -1px; left: -1px; right: -1px; bottom: -1px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--neon-cyan), transparent, var(--neon-magenta));
-  z-index: -1;
-  opacity: 0.5;
+  top: -9px;
+  left: 12px;
+  background: var(--term-bg);
+  padding: 0 8px;
+  font-size: 11px;
+  color: var(--term-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* Cyber scan line animation for cards */
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+/* ── ASCII banner ──────────────────────────── */
+.ascii-banner {
+  color: var(--term-green);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: pre;
 }
 
-.card-scanline::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
-  animation: scanline 3s ease-in-out infinite;
-  pointer-events: none;
+/* ── Terminal prompt ───────────────────────── */
+.term-prompt {
+  color: var(--term-cyan);
 }
 
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.term-prompt::before {
+  content: '$ ';
+  color: var(--term-green);
 }
 
-.pulse-glow {
-  animation: glowPulse 2s ease-in-out infinite;
+/* ── Progress / bar ────────────────────────── */
+.term-bar-bg {
+  background: #1a1a1a;
+  height: 14px;
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+.term-bar-fill {
+  height: 100%;
+  transition: width 1s ease-out;
 }
 
-.shimmer-text {
-  background: linear-gradient(90deg, #e0e0ff 25%, #00f0ff 50%, #e0e0ff 75%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 3s ease-in-out infinite;
+.term-bar-fill.green { background: var(--term-green); }
+.term-bar-fill.amber { background: var(--term-amber); }
+.term-bar-fill.cyan { background: var(--term-cyan); }
+.term-bar-fill.red { background: var(--term-red); }
+
+/* ── Table ─────────────────────────────────── */
+.term-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: rgba(10, 10, 26, 0.5); }
-::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
+.term-table th {
+  color: var(--term-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 400;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--term-border);
+  text-align: left;
+}
 
-/* Number animation */
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(10px); }
+.term-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.4);
+  vertical-align: middle;
+}
+
+.term-table tr:hover td {
+  background: var(--term-selection);
+}
+
+/* ── Tab navigation ────────────────────────── */
+.term-tab {
+  display: inline-block;
+  padding: 4px 12px;
+  cursor: pointer;
+  color: var(--term-dim);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 12px;
+  background: none;
+  transition: none;
+}
+
+.term-tab:hover {
+  color: var(--term-fg);
+}
+
+.term-tab.active {
+  color: var(--term-green);
+  border-color: var(--term-green);
+}
+
+.term-tab .tab-num {
+  color: var(--term-amber);
+}
+
+/* ── Separator line ────────────────────────── */
+.term-sep {
+  border: none;
+  border-top: 1px solid var(--term-border);
+  margin: 12px 0;
+}
+
+/* ── Stat value ────────────────────────────── */
+.stat-value {
+  color: var(--term-cyan);
+  font-size: 16px;
+}
+
+.stat-value.green { color: var(--term-green); }
+.stat-value.amber { color: var(--term-amber); }
+
+.stat-label {
+  color: var(--term-dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Mini graph using block chars ──────────── */
+.mini-graph {
+  font-size: 12px;
+  line-height: 1;
+  white-space: pre;
+  color: var(--term-amber);
+  letter-spacing: -1px;
+}
+
+/* ── Fade in ───────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-count {
-  animation: countUp 0.6s ease-out forwards;
+.term-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-/* Rank badge colors */
-.rank-gold { color: #ffd700; }
-.rank-silver { color: #c0c0c0; }
-.rank-bronze { color: #cd7f32; }
+/* ── Blink text ────────────────────────────── */
+.text-blink {
+  animation: blink 1.2s step-end infinite;
+}
+
+/* ── Scrollbar ─────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0c0c0c; }
+::-webkit-scrollbar-thumb { background: #333; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ── Selection ─────────────────────────────── */
+::selection {
+  background: rgba(51, 255, 51, 0.3);
+  color: #fff;
+}

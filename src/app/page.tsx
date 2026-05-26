@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area,
+  PieChart, Pie, Cell,
 } from 'recharts';
 
 interface RankingItem {
@@ -47,302 +47,332 @@ interface Data {
   detail: DetailItem[];
 }
 
-const COLORS = ['#00f0ff', '#ff00ff', '#7b2fff', '#00ff9d', '#ffd700', '#ff6b6b', '#48dbfb', '#ff9ff3'];
+/* ── Helpers ────────────────────────────────── */
+const fmt = (n: number): string => {
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return n.toLocaleString();
+};
 
-function formatTokens(n: number): string {
-  if (n >= 1000000) return (n / 1000000).toFixed(2) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-  return n.toString();
-}
+const fmtDate = (iso: string): string => {
+  const d = new Date(iso);
+  return d.toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-');
+};
 
-function formatCost(n: number): string {
-  return '$' + n.toFixed(4);
-}
+/* ── Bar character for mini graphs ──────────── */
+const barChar = (pct: number, maxLen = 20): string => {
+  const filled = Math.round((pct / 100) * maxLen);
+  return '█'.repeat(filled) + '░'.repeat(maxLen - filled);
+};
 
-function GlowingStatCard({ label, value, suffix, color }: { label: string; value: string | number; suffix?: string; color: string }) {
+/* ── ASCII Banner ───────────────────────────── */
+const AsciiBanner = () => (
+  <pre className="ascii-banner leading-tight mb-3" style={{ fontSize: '10px' }}>
+{'╔══════════════════════════════════════════════════╗\n' +
+ '║              ████████  ██  ████████              ║\n' +
+ '║              ██░░░░██  ██  ██░░░░                ║\n' +
+ '║              ████████  ██  ███████  v1.0.0       ║\n' +
+ '║              ██░░░░░░  ██  ██░░░░                ║\n' +
+ '║              ██░░░░░░  ██  ████████              ║\n' +
+ '╚══════════════════════════════════════════════════╝'}
+  </pre>
+);
+
+/* ── TermBox wrapper ────────────────────────── */
+function TermBox({ title, children, className = '' }: { title?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className="glass-card p-6 relative overflow-hidden card-scanline" style={{ borderColor: `${color}33` }}>
-      <div className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2 font-medium">{label}</div>
-      <div className="text-3xl font-bold" style={{ color }}>
+    <div className={`term-box p-3 ${className}`}>
+      {title && <div className="term-title-bar">{title}</div>}
+      {children}
+    </div>
+  );
+}
+
+/* ── Stats line ─────────────────────────────── */
+function StatsRow({ label, value, suffix, color = 'cyan' }: { label: string; value: string | number; suffix?: string; color?: string }) {
+  return (
+    <div className="flex items-baseline gap-2 py-1">
+      <span className="stat-label min-w-[120px]">{label}</span>
+      <span className="text-dots text-[var(--term-dim)]">:</span>
+      <span className={`stat-value ${color}`}>
         {value}
-        {suffix && <span className="text-sm text-gray-500 ml-1">{suffix}</span>}
+        {suffix && <span className="text-xs text-[var(--term-dim)] ml-1">{suffix}</span>}
+      </span>
+    </div>
+  );
+}
+
+/* ── Top N card (neofetch style) ────────────── */
+function TopCard({ item, rank }: { item: RankingItem; rank: number }) {
+  const maxTokens = item.totalTokens;
+  const maxSessions = item.sessions;
+  const colors = ['green', 'amber', 'cyan'] as const;
+  const rankColor = ['#33ff33', '#ffb000', '#00ffff'][rank - 1];
+  const rankLabel = ['● MASTER', '● NODE', '● PEER'][rank - 1] || `#${rank}`;
+
+  return (
+    <div className="term-box p-3 mb-2 term-fade-in">
+      <div className="flex items-center gap-3 mb-2">
+        <span style={{ color: rankColor, fontSize: 14 }}>{['◆', '◇', '○'][rank - 1]}</span>
+        <span className="text-xs text-[var(--term-dim)] uppercase tracking-[0.15em]">{rankLabel}</span>
+      </div>
+      <div className="text-sm font-bold text-[var(--term-highlight)] mb-2">{item.name}</div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[var(--term-dim)] w-16">SESSIONS</span>
+          <div className="term-bar-bg flex-1 max-w-[200px]">
+            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '100%' }} />
+          </div>
+          <span className="text-xs text-[var(--term-fg)] w-16 text-right">{item.sessions}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[var(--term-dim)] w-16">TOKENS</span>
+          <div className="term-bar-bg flex-1 max-w-[200px]">
+            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '85%' }} />
+          </div>
+          <span className="text-xs text-[var(--term-fg)] w-16 text-right">{fmt(item.totalTokens)}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-[var(--term-dim)] w-16">COST</span>
+          <div className="term-bar-bg flex-1 max-w-[200px]">
+            <div className={`term-bar-fill ${colors[(rank - 1) % 3]}`} style={{ width: '60%' }} />
+          </div>
+          <span className="text-xs text-[var(--term-fg)] w-16 text-right">${item.cost.toFixed(4)}</span>
+        </div>
       </div>
     </div>
   );
 }
 
-function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) return <span className="text-lg rank-gold">🥇</span>;
-  if (rank === 2) return <span className="text-lg rank-silver">🥈</span>;
-  if (rank === 3) return <span className="text-lg rank-bronze">🥉</span>;
-  return <span className="text-gray-500 font-mono text-sm">#{rank}</span>;
-}
-
-function TokenBar({ value, max, color }: { value: number; max: number; color: string }) {
-  const pct = (value / max) * 100;
-  return (
-    <div className="h-3 rounded-full overflow-hidden bg-[rgba(255,255,255,0.05)]">
-      <div
-        className="h-full rounded-full transition-all duration-1000 ease-out"
-        style={{
-          width: `${Math.max(pct, 1)}%`,
-          background: `linear-gradient(90deg, ${color}66, ${color})`,
-          boxShadow: `0 0 10px ${color}44`,
-        }}
-      />
-    </div>
-  );
-}
-
-function DataTable({ data }: { data: RankingItem[] }) {
+/* ── Terminal Data Table ────────────────────── */
+function TermDataTable({ data }: { data: RankingItem[] }) {
   const [sortKey, setSortKey] = useState<'sessions' | 'totalTokens' | 'cost'>('sessions');
   const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
 
-  const sorted = [...data].sort((a, b) => {
-    const diff = sortDir === 'desc' ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey];
-    return diff;
-  });
+  const sorted = useMemo(() => {
+    return [...data].sort((a, b) => {
+      return sortDir === 'desc' ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey];
+    });
+  }, [data, sortKey, sortDir]);
 
-  const maxTokens = Math.max(...data.map(d => d.totalTokens));
-  const maxSessions = Math.max(...data.map(d => d.sessions));
+  const toggleSort = (key: typeof sortKey) => {
+    if (sortKey === key) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
+    else { setSortKey(key); setSortDir('desc'); }
+  };
+
+  const sortArrow = (key: string) => {
+    if (sortKey !== key) return '';
+    return sortDir === 'desc' ? ' ▼' : ' ▲';
+  };
+
+  const maxVal = Math.max(...data.map(d => d[sortKey]));
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-6">
-        <span className="text-xs text-gray-500 uppercase tracking-wider">排序：</span>
-        {(['sessions', 'totalTokens', 'cost'] as const).map(key => (
-          <button
-            key={key}
-            onClick={() => {
-              if (sortKey === key) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
-              else { setSortKey(key); setSortDir('desc'); }
-            }}
-            className={`text-xs px-3 py-1.5 rounded-full transition-all ${
-              sortKey === key
-                ? 'bg-[rgba(0,240,255,0.15)] text-[#00f0ff] border border-[rgba(0,240,255,0.3)]'
-                : 'bg-[rgba(255,255,255,0.03)] text-gray-500 border border-transparent hover:text-gray-300'
-            }`}
-          >
-            {key === 'sessions' ? '会话次数' : key === 'totalTokens' ? '总Token' : '费用'}
-            {sortKey === key && (sortDir === 'desc' ? ' ↓' : ' ↑')}
-          </button>
-        ))}
+      <div className="flex items-center gap-2 mb-3 text-xs text-[var(--term-dim)]">
+        <span className="uppercase tracking-wider">sort:</span>
+        <button onClick={() => toggleSort('sessions')} className="term-tab text-xs px-2 py-0.5">
+          <span className="tab-num">1</span> sessions{sortArrow('sessions')}
+        </button>
+        <button onClick={() => toggleSort('totalTokens')} className="term-tab text-xs px-2 py-0.5">
+          <span className="tab-num">2</span> tokens{sortArrow('totalTokens')}
+        </button>
+        <button onClick={() => toggleSort('cost')} className="term-tab text-xs px-2 py-0.5">
+          <span className="tab-num">3</span> cost{sortArrow('cost')}
+        </button>
       </div>
 
-      <div className="space-y-3">
-        {sorted.map((item, i) => {
-          const barColor = item.rank <= 3 ? COLORS[item.rank - 1] : '#4a4a8a';
-          return (
-            <div
-              key={item.name}
-              className="glass-card p-4 flex items-center gap-4 animate-count"
-              style={{ animationDelay: `${i * 30}ms` }}
-            >
-              <div className="w-10 text-center">
-                <RankBadge rank={item.rank} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-sm truncate text-gray-200">{item.name}</span>
-                  <span className="text-xs text-gray-500 font-mono">{formatTokens(item.totalTokens)}</span>
-                </div>
-                <div className="flex gap-6">
-                  <div className="flex-1">
-                    <TokenBar value={item.sessions} max={maxSessions} color={barColor} />
-                    <div className="flex justify-between mt-1">
-                      <span className="text-[10px] text-gray-600">会话</span>
-                      <span className="text-[10px] font-mono" style={{ color: barColor }}>{item.sessions}</span>
-                    </div>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-xs font-mono text-gray-400">{formatCost(item.cost)}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      <div className="overflow-x-auto">
+        <table className="term-table">
+          <thead>
+            <tr>
+              <th style={{ width: 36 }}>#</th>
+              <th>name</th>
+              <th style={{ width: 80 }} className="text-right">tokens</th>
+              <th style={{ width: 80 }} className="text-right">sessions</th>
+              <th style={{ width: 90 }} className="text-right">cost</th>
+              <th className="hidden md:table-cell">bar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((item, i) => {
+              const barPct = (item[sortKey] / maxVal) * 100;
+              const rankColor = item.rank === 1 ? '#33ff33' : item.rank === 2 ? '#ffb000' : item.rank === 3 ? '#00ffff' : '#555';
+              return (
+                <tr key={item.name} className="term-fade-in" style={{ animationDelay: `${i * 20}ms` }}>
+                  <td style={{ color: rankColor }}>{item.rank <= 3 ? ['●', '◆', '◇'][item.rank - 1] : `#${item.rank}`}</td>
+                  <td className="font-medium">{item.name}</td>
+                  <td className="text-right font-mono text-xs">{fmt(item.totalTokens)}</td>
+                  <td className="text-right font-mono text-xs">{item.sessions}</td>
+                  <td className="text-right font-mono text-xs text-[var(--term-amber)]">${item.cost.toFixed(4)}</td>
+                  <td className="hidden md:table-cell">
+                    <span className="mini-graph text-xs">{barChar(barPct, 15)}</span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
 
-function CostPieChart({ data }: { data: RankingItem[] }) {
-  // Top 8 by cost
+/* ── Terminal Style Charts ──────────────────── */
+const chartColors = ['#33ff33', '#ffb000', '#00ffff', '#ff3333', '#ff69b4', '#aa66ff', '#ffd700', '#00ff9d'];
+
+function CostPie({ data }: { data: RankingItem[] }) {
   const top = [...data].sort((a, b) => b.cost - a.cost).slice(0, 8);
   const other = data.slice(8);
-  const otherCost = other.reduce((s, r) => s + r.cost, 0);
   const chartData = [
     ...top.map(r => ({ name: r.name, value: r.cost })),
-    { name: '其他', value: otherCost },
+    { name: 'others', value: other.reduce((s, r) => s + r.cost, 0) },
   ];
 
   return (
-    <div className="glass-card p-6 card-scanline">
-      <h3 className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">费用分布</h3>
-      <ResponsiveContainer width="100%" height={280}>
+    <TermBox title="cost distribution">
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
-          <Pie
-            data={chartData}
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={110}
-            paddingAngle={2}
-            dataKey="value"
-          >
+          <Pie data={chartData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={1} dataKey="value">
             {chartData.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="rgba(0,0,0,0.3)" strokeWidth={2} />
+              <Cell key={i} fill={chartColors[i % chartColors.length]} stroke="#0c0c0c" strokeWidth={2} />
             ))}
           </Pie>
           <Tooltip
-            contentStyle={{ background: 'rgba(10,10,26,0.95)', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '12px', color: '#e0e0ff' }}
-            formatter={(value: number) => [formatCost(value), '费用']}
+            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
+            formatter={(value: number) => [`$${value.toFixed(4)}`, 'cost']}
           />
         </PieChart>
       </ResponsiveContainer>
-      <div className="flex flex-wrap gap-2 mt-2">
+      <div className="flex flex-wrap gap-2 mt-2 text-xs font-mono">
         {chartData.map((item, i) => (
-          <div key={item.name} className="flex items-center gap-1.5 text-xs text-gray-400">
-            <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+          <div key={item.name} className="flex items-center gap-1 text-[var(--term-dim)]">
+            <span style={{ color: chartColors[i % chartColors.length] }}>■</span>
             <span>{item.name}</span>
           </div>
         ))}
       </div>
-    </div>
+    </TermBox>
   );
 }
 
-function SessionsBarChart({ data }: { data: RankingItem[] }) {
+function SessionsBar({ data }: { data: RankingItem[] }) {
   const top15 = [...data].sort((a, b) => b.sessions - a.sessions).slice(0, 15);
 
   return (
-    <div className="glass-card p-6 card-scanline">
-      <h3 className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">会话次数 Top 15</h3>
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={top15} layout="vertical" margin={{ left: 20, right: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-          <XAxis type="number" tick={{ fill: '#666', fontSize: 11 }} />
-          <YAxis type="category" dataKey="name" tick={{ fill: '#aaa', fontSize: 11 }} width={80} />
+    <TermBox title="sessions top 15">
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={top15} layout="vertical" margin={{ left: 20, right: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
+          <XAxis type="number" tick={{ fill: '#555', fontSize: 11, fontFamily: 'monospace' }} />
+          <YAxis type="category" dataKey="name" tick={{ fill: '#888', fontSize: 11, fontFamily: 'monospace' }} width={70} />
           <Tooltip
-            contentStyle={{ background: 'rgba(10,10,26,0.95)', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '12px', color: '#e0e0ff' }}
-            formatter={(value: number) => [value, '会话次数']}
+            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
+            formatter={(value: number) => [value, 'sessions']}
           />
-          <Bar dataKey="sessions" radius={[0, 4, 4, 0]}>
+          <Bar dataKey="sessions" radius={[0, 2, 2, 0]}>
             {top15.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              <Cell key={i} fill={chartColors[i % chartColors.length]} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </TermBox>
   );
 }
 
-function TokenEfficiencyChart({ data }: { data: RankingItem[] }) {
+function EfficiencyChart({ data }: { data: RankingItem[] }) {
   const top20 = [...data]
     .filter(r => r.sessions >= 5)
-    .map(r => ({ name: r.name, outputPerSession: Math.round(r.totalTokens * 0.4 / r.sessions) }))
-    .sort((a, b) => b.outputPerSession - a.outputPerSession)
+    .map(r => ({ name: r.name, value: Math.round(r.totalTokens * 0.4 / r.sessions) }))
+    .sort((a, b) => b.value - a.value)
     .slice(0, 20);
 
   return (
-    <div className="glass-card p-6 card-scanline">
-      <h3 className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">每次会话产出 Token (估算)</h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={top20} layout="vertical" margin={{ left: 20, right: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-          <XAxis type="number" tick={{ fill: '#666', fontSize: 11 }} />
-          <YAxis type="category" dataKey="name" tick={{ fill: '#aaa', fontSize: 11 }} width={80} />
+    <TermBox title="tokens per session (est.)">
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart data={top20} layout="vertical" margin={{ left: 20, right: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
+          <XAxis type="number" tick={{ fill: '#555', fontSize: 11, fontFamily: 'monospace' }} />
+          <YAxis type="category" dataKey="name" tick={{ fill: '#888', fontSize: 11, fontFamily: 'monospace' }} width={70} />
           <Tooltip
-            contentStyle={{ background: 'rgba(10,10,26,0.95)', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '12px', color: '#e0e0ff' }}
-            formatter={(value: number) => [value.toLocaleString(), 'Token/会话']}
+            contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 0, color: '#c8c8c8', fontFamily: 'monospace', fontSize: 12 }}
+            formatter={(value: number) => [value.toLocaleString(), 'tokens/session']}
           />
-          <Bar dataKey="outputPerSession" radius={[0, 4, 4, 0]}>
+          <Bar dataKey="value" radius={[0, 2, 2, 0]}>
             {top20.map((_, i) => (
-              <Cell key={i} fill={`hsl(${180 + i * 12}, 100%, 60%)`} />
+              <Cell key={i} fill={`hsl(${120 + i * 8}, 100%, ${50 + i}%)`} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </TermBox>
   );
 }
 
-function TopSection({ top5 }: { top5: RankingItem[] }) {
+/* ── Full ranking table card ────────────────── */
+function FullRankingTable({ data }: { data: RankingItem[] }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      {top5.map((item, i) => (
-        <div
-          key={item.name}
-          className={`glass-card p-6 relative glow-border animate-count card-scanline`}
-          style={{ animationDelay: `${i * 100}ms` }}
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <RankBadge rank={item.rank} />
-            <div className="text-lg font-bold text-gray-100">{item.name}</div>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-gray-600">会话</div>
-              <div className="text-lg font-bold font-mono text-[#00f0ff]">{item.sessions}</div>
-            </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-gray-600">Token</div>
-              <div className="text-lg font-bold font-mono text-[#ff00ff]">{formatTokens(item.totalTokens)}</div>
-            </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-gray-600">费用</div>
-              <div className="text-lg font-bold font-mono text-[#00ff9d]">{formatCost(item.cost)}</div>
-            </div>
-          </div>
-          {item.rank === 1 && (
-            <div className="absolute -top-3 -right-3 text-2xl pulse-glow">👑</div>
-          )}
-        </div>
-      ))}
-    </div>
+    <TermBox title="full ranking">
+      <div className="overflow-y-auto max-h-[350px]">
+        <table className="term-table">
+          <thead>
+            <tr>
+              <th style={{ width: 32 }}>#</th>
+              <th>name</th>
+              <th className="text-right">tokens</th>
+              <th className="text-right">sessions</th>
+              <th className="text-right">cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item) => {
+              const c = item.rank === 1 ? '#33ff33' : item.rank === 2 ? '#ffb000' : item.rank === 3 ? '#00ffff' : '#888';
+              return (
+                <tr key={item.name}>
+                  <td style={{ color: c }}>#{item.rank}</td>
+                  <td>{item.name}</td>
+                  <td className="text-right font-mono text-[var(--term-cyan)]">{fmt(item.totalTokens)}</td>
+                  <td className="text-right font-mono">{item.sessions}</td>
+                  <td className="text-right font-mono text-[var(--term-amber)]">${item.cost.toFixed(4)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </TermBox>
   );
 }
 
-function StarField() {
+/* ── Tab nav item ───────────────────────────── */
+function NavTab({ num, label, active, onClick }: { num: number; label: string; active: boolean; onClick: () => void }) {
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {Array.from({ length: 50 }).map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-1 h-1 rounded-full"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: Math.random() > 0.7 ? '#00f0ff' : Math.random() > 0.5 ? '#7b2fff' : '#ffffff',
-            opacity: Math.random() * 0.5 + 0.2,
-            animation: `glowPulse ${Math.random() * 3 + 2}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 5}s`,
-            width: `${Math.random() * 2 + 1}px`,
-            height: `${Math.random() * 2 + 1}px`,
-          }}
-        />
-      ))}
-    </div>
+    <button
+      onClick={onClick}
+      className={`term-tab ${active ? 'active' : ''}`}
+    >
+      <span className="tab-num">[{num}]</span> {label}
+    </button>
   );
 }
 
-function HackerRain() {
-  // Digital rain effect column labels
+/* ── Status bar ─────────────────────────────── */
+function StatusBar({ text, items }: { text?: string; items?: { label: string; value: string }[] }) {
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] overflow-hidden text-[#00f0ff] text-[10px] font-mono leading-tight">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="absolute" style={{ left: `${i * 14}%`, top: 0 }}>
-          {Array.from({ length: 20 }).map((_, j) => (
-            <div key={j} style={{ opacity: 1 - j * 0.05 }}>{'01001101'.substring(j % 8)}</div>
-          ))}
-        </div>
+    <div className="flex items-center gap-4 text-[10px] text-[var(--term-dim)] font-mono border-t border-[var(--term-border)] pt-2 mt-4">
+      {text && <span>{text}</span>}
+      {items?.map((item, i) => (
+        <span key={i}>
+          <span className="text-[var(--term-green)]">{item.label}</span>={item.value}
+        </span>
       ))}
+      <span className="cursor-blink ml-auto" />
     </div>
   );
 }
 
+/* ── Main Page ──────────────────────────────── */
 export default function Home() {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
@@ -351,183 +381,155 @@ export default function Home() {
   useEffect(() => {
     fetch('./data/data.json')
       .then(r => r.json())
-      .then(d => {
-        setData(d);
-        setLoading(false);
-      })
+      .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
+  /* ── Loading ── */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4 animate-pulse">⟁</div>
-          <div className="text-[#00f0ff] text-sm uppercase tracking-[0.3em] animate-pulse">INITIALIZING... </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <TermBox title="booting" className="text-center w-full max-w-md">
+          <AsciiBanner />
+          <hr className="term-sep" />
+          <div className="text-xs text-[var(--term-dim)] mb-3">loading data from feishu sheets...</div>
+          <div className="term-bar-bg w-full max-w-xs mx-auto">
+            <div className="term-bar-fill green" style={{ width: '60%' }} />
+          </div>
+          <div className="text-xs text-[var(--term-green)] mt-2 text-blink">⟁</div>
+        </TermBox>
       </div>
     );
   }
 
+  /* ── Error ── */
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass-card p-8 text-center">
-          <div className="text-4xl mb-4">⚠</div>
-          <div className="text-gray-400">数据载入失败。请先运行 `npm run fetch-data`</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <TermBox title="error" className="text-center">
+          <div className="text-[var(--term-red)] text-lg mb-2">✗</div>
+          <div className="text-sm text-[var(--term-fg)] mb-1">Failed to load data.</div>
+          <div className="text-xs text-[var(--term-dim)]">Run `node scripts/fetch-data.js` first.</div>
+        </TermBox>
       </div>
     );
   }
 
-  const { stats, top5, ranking, detail } = data;
-  const rankTop3 = ranking.slice(0, 3);
+  const { stats, top5, ranking } = data;
 
   return (
-    <>
-      <StarField />
-      <HackerRain />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="mb-10">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h1 className="text-4xl font-black neon-text tracking-tight">
-                TOKEN VISION
-              </h1>
-              <p className="text-gray-600 text-sm mt-1 tracking-wide">
-                Hermes AI · 跨实例 Token 消耗监控系统
-              </p>
+    <div className="min-h-screen p-4 max-w-7xl mx-auto">
+      {/* ── Header ── */}
+      <TermBox className="mb-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="text-xs text-[var(--term-green)] mb-1">
+              <span className="term-prompt">./token-vision --monitor</span>
             </div>
-            <div className="text-right">
-              <div className="text-xs text-gray-600 font-mono">
-                更新于 {data.updatedAt}
-              </div>
-              <div className="text-xs text-gray-600 mt-1">
-                {stats.totalPeople} 位活跃用户
-              </div>
+            <AsciiBanner />
+            <div className="text-[10px] text-[var(--term-dim)] tracking-[0.2em] uppercase">
+              Hermes AI · Cross-Instance Token Consumption Monitor
             </div>
           </div>
-
-          {/* Navigation */}
-          <nav className="flex gap-2 mt-6">
-            {([
-              { key: 'dashboard', label: '总览', icon: '◆' },
-              { key: 'ranking', label: '排名', icon: '▲' },
-              { key: 'charts', label: '图表', icon: '■' },
-            ] as const).map(nav => (
-              <button
-                key={nav.key}
-                onClick={() => setActiveView(nav.key)}
-                className={`px-5 py-2 rounded-full text-sm transition-all ${
-                  activeView === nav.key
-                    ? 'bg-[rgba(0,240,255,0.1)] text-[#00f0ff] border border-[rgba(0,240,255,0.3)]'
-                    : 'text-gray-500 hover:text-gray-300 border border-transparent'
-                }`}
-              >
-                {nav.icon} {nav.label}
-              </button>
-            ))}
-          </nav>
-        </header>
-
-        {activeView === 'dashboard' && (
-          <>
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <GlowingStatCard label="总 Token" value={formatTokens(stats.totalTokens)} color="#00f0ff" />
-              <GlowingStatCard label="总费用" value={`$${stats.totalCost}`} color="#ff00ff" />
-              <GlowingStatCard label="总会话" value={stats.totalSessions} color="#7b2fff" />
-              <GlowingStatCard label="活跃人数" value={stats.totalPeople} color="#00ff9d" />
-            </div>
-
-            {/* Top 3 */}
-            <div className="mb-8">
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">🏆 前三名</h2>
-              <TopSection top5={top5} />
-            </div>
-
-            {/* Avg stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="glass-card p-4 text-center">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">人均 Token</div>
-                <div className="text-xl font-bold text-[#00f0ff]">{formatTokens(stats.avgTokensPerPerson)}</div>
-              </div>
-              <div className="glass-card p-4 text-center">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">人均费用</div>
-                <div className="text-xl font-bold text-[#ff00ff]">${stats.avgCostPerPerson}</div>
-              </div>
-              <div className="glass-card p-4 text-center">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">人均会话</div>
-                <div className="text-xl font-bold text-[#00ff9d]">{stats.avgSessionsPerPerson}</div>
-              </div>
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <CostPieChart data={ranking} />
-              <SessionsBarChart data={ranking} />
-            </div>
-          </>
-        )}
-
-        {activeView === 'ranking' && (
-          <div className="max-w-3xl mx-auto">
-            <DataTable data={ranking} />
+          <div className="text-right text-[10px] text-[var(--term-dim)] font-mono">
+            <div>UPDATED {fmtDate(data.updatedAt)}</div>
+            <div className="text-[var(--term-green)]">{stats.totalPeople} ACTIVE USERS</div>
           </div>
-        )}
+        </div>
+      </TermBox>
 
-        {activeView === 'charts' && (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <CostPieChart data={ranking} />
-              <SessionsBarChart data={ranking} />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <TokenEfficiencyChart data={ranking} />
-              {/* Summary table card */}
-              <div className="glass-card p-6 card-scanline">
-                <h3 className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4">完整排名</h3>
-                <div className="overflow-y-auto max-h-[400px]">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-gray-500 text-[10px] uppercase tracking-wider border-b border-[rgba(255,255,255,0.05)]">
-                        <th className="text-left py-2">#</th>
-                        <th className="text-left py-2">姓名</th>
-                        <th className="text-right py-2">Token</th>
-                        <th className="text-right py-2">会话</th>
-                        <th className="text-right py-2">费用</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ranking.map((item) => (
-                        <tr key={item.name} className="border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)]">
-                          <td className="py-2 font-mono text-gray-500">{item.rank}</td>
-                          <td className="py-2 text-gray-300">{item.name}</td>
-                          <td className="py-2 text-right font-mono text-[#00f0ff]">{formatTokens(item.totalTokens)}</td>
-                          <td className="py-2 text-right font-mono text-[#ff00ff]">{item.sessions}</td>
-                          <td className="py-2 text-right font-mono text-[#00ff9d]">{formatCost(item.cost)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Footer */}
-        <footer className="mt-16 pb-8 text-center">
-          <div className="text-[10px] text-gray-700 uppercase tracking-[0.4em]">
-            <span className="text-[#00f0ff]">✦</span> POWERED BY HERMES AI <span className="text-[#ff00ff]">✦</span>
-          </div>
-          <div className="text-[10px] text-gray-700 mt-2 font-mono">
-            token-vision v0.1 · 数据每小时自动同步
-          </div>
-        </footer>
+      {/* ── Navigation ── */}
+      <div className="flex gap-1 mb-4 flex-wrap">
+        <NavTab num={1} label="DASHBOARD" active={activeView === 'dashboard'} onClick={() => setActiveView('dashboard')} />
+        <NavTab num={2} label="RANKING" active={activeView === 'ranking'} onClick={() => setActiveView('ranking')} />
+        <NavTab num={3} label="CHARTS" active={activeView === 'charts'} onClick={() => setActiveView('charts')} />
       </div>
-    </>
+
+      {/* ── Dashboard ── */}
+      {activeView === 'dashboard' && (
+        <>
+          {/* Stats */}
+          <TermBox title="summary" className="mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div>
+                <StatsRow label="TOTAL TOKENS" value={fmt(stats.totalTokens)} color="cyan" />
+                <StatsRow label="TOTAL COST" value={`$${stats.totalCost}`} color="amber" />
+              </div>
+              <div>
+                <StatsRow label="TOTAL SESSIONS" value={stats.totalSessions} color="green" />
+                <StatsRow label="ACTIVE USERS" value={stats.totalPeople} color="green" />
+              </div>
+              <div>
+                <StatsRow label="AVG TOKENS/USER" value={fmt(stats.avgTokensPerPerson)} color="cyan" />
+                <StatsRow label="AVG COST/USER" value={`$${stats.avgCostPerPerson}`} color="amber" />
+              </div>
+              <div>
+                <StatsRow label="AVG SESSIONS/USER" value={stats.avgSessionsPerPerson} color="green" />
+              </div>
+            </div>
+          </TermBox>
+
+          {/* Top 3 */}
+          <div className="mb-4">
+            <div className="text-xs text-[var(--term-dim)] uppercase tracking-[0.15em] mb-2">
+              ▸ top operators
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {top5.slice(0, 3).map((item, i) => (
+                <TopCard key={item.name} item={item} rank={i + 1} />
+              ))}
+            </div>
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <CostPie data={ranking} />
+            <SessionsBar data={ranking} />
+          </div>
+
+          <StatusBar
+            items={[
+              { label: 'view', value: 'dashboard' },
+              { label: 'users', value: String(stats.totalPeople) },
+              { label: 'total_tokens', value: fmt(stats.totalTokens) },
+            ]}
+          />
+        </>
+      )}
+
+      {/* ── Ranking ── */}
+      {activeView === 'ranking' && (
+        <TermBox title="player ranking" className="mb-4">
+          <TermDataTable data={ranking} />
+          <StatusBar
+            items={[
+              { label: 'view', value: 'ranking' },
+              { label: 'entries', value: String(ranking.length) },
+              { label: 'sort', value: 'click tabs to change' },
+            ]}
+          />
+        </TermBox>
+      )}
+
+      {/* ── Charts ── */}
+      {activeView === 'charts' && (
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <CostPie data={ranking} />
+            <SessionsBar data={ranking} />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <EfficiencyChart data={ranking} />
+            <FullRankingTable data={ranking} />
+          </div>
+          <StatusBar
+            items={[
+              { label: 'view', value: 'charts' },
+              { label: 'users', value: String(stats.totalPeople) },
+            ]}
+          />
+        </>
+      )}
+    </div>
   );
 }
