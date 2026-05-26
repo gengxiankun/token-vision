@@ -281,28 +281,32 @@ export default function Home() {
           );
         }
 
-        // Top 10 in 2-column grid
+        // Top 10 in rich card format
         const top10 = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens).slice(0, 10);
         if (top10.length > 0) {
           appendLines({ type: 'header', text: 'TOP OPERATORS' }, { type: 'sep' });
           const badges = ['●', '◆', '○'];
           const colors = ['green', 'amber', 'cyan'];
           const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+          const maxTok = Math.max(...top10.map(r => r.totalTokens));
           const rows: string[] = ['<div class="top-grid">'];
           top10.forEach((item, i) => {
-            const rankColor = i < 3 ? colors[i] : 'dim';
             const badge = i < 3 ? badges[i] : `#${i + 1}`;
             const badgeColor = i < 3 ? hexColors[i] : 'var(--c-dim)';
+            const clr = i < 3 ? colors[i] : 'dim';
+            const tokPct = (item.totalTokens / maxTok) * 100;
             rows.push(
-              `<div class="top-card-compact">`,
-              `  <div class="top-card-rank" style="color:${badgeColor}">${badge}</div>`,
-              `  <div class="top-card-info">`,
-              `    <div class="top-card-name">${item.name}</div>`,
-              `    <div class="top-card-stats">`,
-              `      <span class="${i < 3 ? colors[i] : ''}">${fmt(item.totalTokens)}</span>`,
-              `      <span>${item.sessions}s</span>`,
-              `    </div>`,
+              `<div class="top-card">`,
+              `  <div class="top-card-header">`,
+              `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
+              `    <span class="top-card-name">${item.name}</span>`,
               `  </div>`,
+              `  <div class="top-card-metrics">`,
+              `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+              `  </div>`,
+              `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
               `</div>`,
             );
           });
