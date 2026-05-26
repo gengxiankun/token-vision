@@ -5,26 +5,25 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
     "start": "next start",
     "fetch-data": "node scripts/fetch-data.js",
-    "refresh": "node scripts/fetch-data.js && npm run build",
-    "deploy": "npm run fetch-data && npm run build && npx gh-pages -d out"
+    "refresh": "node scripts/fetch-data.js && pnpm run build",
+    "deploy": "pnpm run fetch-data && pnpm run build && npx gh-pages -d out"
   },
   "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "recharts": "^2.12.0"
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
     "playwright": "^1.60.0",
-    "postcss": "^8.4.0",
+    "postcss": "^8.5.15",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.4.0"
+    "typescript": "^6.0.3"
   }
 }
