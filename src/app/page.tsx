@@ -349,6 +349,45 @@ export default function Home() {
         break;
       }
 
+      case 'cards': {
+        appendLines(
+          { type: 'header', text: 'ALL OPERATORS (' + ranking.length + ')' },
+          { type: 'sep' },
+        );
+        const allSorted = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens);
+        const maxTokAll = Math.max(...allSorted.map(r => r.totalTokens));
+        const badges = ['●', '◆', '○'];
+        const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+        const colors = ['green', 'amber', 'cyan'];
+        const rows: string[] = ['<div class="top-grid">'];
+        allSorted.forEach((item, i) => {
+          const badge = i < 3 ? badges[i] : `#${i + 1}`;
+          const badgeColor = i < 3 ? hexColors[i] : 'var(--c-dim)';
+          const clr = i < 3 ? colors[i] : 'dim';
+          const tokPct = (item.totalTokens / maxTokAll) * 100;
+          rows.push(
+            `<div class="top-card">`,
+            `  <div class="top-card-header">`,
+            `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
+            `    <span class="top-card-name">${item.name}</span>`,
+            `  </div>`,
+            `  <div class="top-card-metrics">`,
+            `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+            `  </div>`,
+            `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
+            `</div>`,
+          );
+        });
+        rows.push('</div>');
+        appendLines(
+          { type: 'html', html: rows.join('\\n') },
+          { type: 'raw', text: '' },
+        );
+        break;
+      }
+
       case 'charts': {
         appendLines({ type: 'header', text: 'TOKEN DISTRIBUTION' }, { type: 'sep' });
         appendLines({ type: 'raw', text: '' });
@@ -452,7 +491,8 @@ export default function Home() {
         appendLines(
           { type: 'header', text: 'AVAILABLE COMMANDS' },
           { type: 'sep' },
-          { type: 'raw', text: '  dashboard  —  System overview with top 3 operators' },
+          { type: 'raw', text: '  dashboard  —  System overview with top 10 operators' },
+          { type: 'raw', text: '  cards      —  Show ALL operators as card grid' },
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
@@ -478,7 +518,7 @@ export default function Home() {
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
           { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 15min)' },
           { type: 'raw', text: '' },
-          { type: 'raw', text: '  Commands: dashboard | top | ranking | charts | refresh | help | clear' },
+          { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | refresh | help | clear' },
           { type: 'raw', text: '' },
         );
         break;

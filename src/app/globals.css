@@ -247,8 +247,8 @@ body {
 /* ── Top operator cards (dashboard) ──────────── */
 .top-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
   margin-bottom: 6px;
 }
 
