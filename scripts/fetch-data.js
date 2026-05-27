@@ -68,19 +68,39 @@ async function main() {
 
   // 3. Parse summary sheet (main ranking data)
   const summaryRows = allData.summary || [];
+  
+  // 3a. Find the latest timestamp snapshot (table accumulates multiple snapshots)
+  let latestTs = '';
+  for (const row of summaryRows) {
+    const ts = String(row[6] || '').trim();
+    if (ts > latestTs) latestTs = ts;
+  }
+  
+  // 3b. Parse only rows from the latest snapshot
   const ranking = [];
   for (const row of summaryRows) {
-    // Robust header detection — handle corrupted/overwritten headers
+    // Robust header detection
     const firstCol = String(row[0] || '').trim();
     const secondCol = String(row[1] || '').trim();
     if (!firstCol || !secondCol) continue;
     if (firstCol === '排名' || secondCol === '姓名') continue;
     if (String(row[0]) === '999') continue;
-    // Skip non-numeric first column (safe margin: real ranks are always numbers)
     if (isNaN(parseInt(firstCol))) continue;
+    
+    // Only keep rows from the latest timestamp snapshot
+    const ts = String(row[6] || '').trim();
+    if (ts !== latestTs) continue;
+    
     const rawName = String(row[1]).trim();
-    // Clean name: strip "TEX attacks PTEX" suffix
-    const name = rawName.replace(/\s+TEX attacks PTE?X?\s*$/, '').trim();
+    // Skip non-person rows (group IDs, summary rows)
+    if (rawName.startsWith('?oc_')) continue;
+    if (rawName === '📊 全公司合计' || rawName === '全公司合计') continue;
+    
+    // Clean name: strip "TEX attacks PTEX" suffix + clean work number prefix
+    let name = rawName.replace(/\s+TEX attacks PTE?X?\s*$/, '').trim();
+    name = name.replace(/^\d+\s+/, '').trim();
+    if (!name) name = rawName; // preserve if cleaning emptied it (e.g. "49276")
+    
     ranking.push({
       rank: parseInt(row[0]) || 0,
       name,
