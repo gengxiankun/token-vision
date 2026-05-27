@@ -70,10 +70,20 @@ async function main() {
   const summaryRows = allData.summary || [];
   const ranking = [];
   for (const row of summaryRows) {
-    if (!row[0] || !row[1] || row[0] === '排名' || String(row[0]) === '999') continue;
+    // Robust header detection — handle corrupted/overwritten headers
+    const firstCol = String(row[0] || '').trim();
+    const secondCol = String(row[1] || '').trim();
+    if (!firstCol || !secondCol) continue;
+    if (firstCol === '排名' || secondCol === '姓名') continue;
+    if (String(row[0]) === '999') continue;
+    // Skip non-numeric first column (safe margin: real ranks are always numbers)
+    if (isNaN(parseInt(firstCol))) continue;
+    const rawName = String(row[1]).trim();
+    // Clean name: strip "TEX attacks PTEX" suffix
+    const name = rawName.replace(/\s+TEX attacks PTE?X?\s*$/, '').trim();
     ranking.push({
       rank: parseInt(row[0]) || 0,
-      name: String(row[1]).trim(),
+      name,
       totalTokens: parseInt(row[2]) || 0,
       cost: parseFloat(row[3]) || 0,
       sessions: parseInt(row[4]) || 0,
