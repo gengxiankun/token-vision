@@ -70,13 +70,13 @@ async function main() {
   const summaryRows = allData.summary || [];
   
   // 3a. Find the latest timestamp snapshot (table accumulates multiple snapshots)
-  // Skip header row — only consider data rows
+  // Skip header row and empty-timestamp rows — only consider valid data rows
   let latestTs = '';
   for (const row of summaryRows) {
     const firstCol = String(row[0] || '').trim();
     if (!firstCol || isNaN(parseInt(firstCol))) continue; // skip header
     const ts = String(row[6] || '').trim();
-    if (ts > latestTs) latestTs = ts;
+    if (ts && ts > latestTs) latestTs = ts; // only consider non-empty timestamps
   }
   
   // 3b. Parse only rows from the latest snapshot
@@ -99,10 +99,10 @@ async function main() {
     if (rawName.startsWith('?oc_')) continue;
     if (rawName === '📊 全公司合计' || rawName === '全公司合计') continue;
     
-    // Clean name: strip "TEX attacks PTEX" suffix + clean work number prefix
+    // Clean name: strip "TEX attacks PTEX" suffix only — keep work number prefix
+    // (number prefixes differentiate people on the Feishu table)
     let name = rawName.replace(/\s+TEX attacks PTE?X?\s*$/, '').trim();
-    name = name.replace(/^\d+\s+/, '').trim();
-    if (!name) name = rawName; // preserve if cleaning emptied it (e.g. "49276")
+    // Keep name as-is — don't strip number prefixes in this display layer
     
     ranking.push({
       rank: parseInt(row[0]) || 0,
