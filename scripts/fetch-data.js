@@ -70,8 +70,11 @@ async function main() {
   const summaryRows = allData.summary || [];
   
   // 3a. Find the latest timestamp snapshot (table accumulates multiple snapshots)
+  // Skip header row — only consider data rows
   let latestTs = '';
   for (const row of summaryRows) {
+    const firstCol = String(row[0] || '').trim();
+    if (!firstCol || isNaN(parseInt(firstCol))) continue; // skip header
     const ts = String(row[6] || '').trim();
     if (ts > latestTs) latestTs = ts;
   }
