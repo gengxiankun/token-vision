@@ -342,6 +342,12 @@ body {
 .top-card-bar-fill.cyan { background: var(--c-cyan); }
 .top-card-bar-fill.dim { background: #333333; }
 
+/* ── Bottom tier card (ranking) ──────────────── */
+.bot-card {
+  border-color: #551010;
+  background: rgba(255, 30, 30, 0.04);
+}
+
 .top-bar-row {
   display: flex;
   align-items: center;

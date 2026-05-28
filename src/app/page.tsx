@@ -339,13 +339,81 @@ export default function Home() {
 
       case 'ranking': {
         const sorted = [...ranking].sort((a, b) => a.rank - b.rank);
-        appendLines({ type: 'header', text: 'FULL RANKING TABLE' }, { type: 'sep' });
+        const total = sorted.length;
+        const bottomStart = total - 10;
+        appendLines({ type: 'header', text: 'FULL RANKING — HIERARCHICAL VIEW' }, { type: 'sep' });
+
+        const badges = ['●', '◆', '○'];
+        const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+        const colors = ['green', 'amber', 'cyan'];
+        const maxTok = Math.max(...sorted.map(r => r.totalTokens));
+
+        const renderTier = (items: typeof sorted, tier: 'top' | 'mid' | 'bot') => {
+          const rows: string[] = [];
+          items.forEach((item, i) => {
+            const actualIdx = item.rank - 1;
+            const badge = actualIdx < 3 ? badges[actualIdx] : '#' + String(item.rank);
+            const badgeColor = actualIdx < 3 ? hexColors[actualIdx] : (tier === 'bot' ? 'var(--c-red)' : 'var(--c-dim)');
+            const clr = actualIdx < 3 ? colors[actualIdx] : (tier === 'bot' ? 'red' : 'dim');
+            const tokPct = (item.totalTokens / maxTok) * 100;
+            rows.push(
+              `<div class="top-card ${tier === 'bot' ? 'bot-card' : ''}">`,
+              `  <div class="top-card-header">`,
+              `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
+              `    <span class="top-card-name" style="${tier === 'bot' ? 'color:var(--c-red);' : ''}">${item.name}</span>`,
+              `  </div>`,
+              `  <div class="top-card-metrics">`,
+              `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+              `  </div>`,
+              `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
+              `</div>`,
+            );
+          });
+          return rows;
+        };
+
+        // ═══ TOP 10 ═══
         appendLines(
-          { type: 'html', html: `<div class="ascii-table-wrap">${sorted.map(r => {
-            const rankStr = r.rank <= 3 ? ['●','◆','○'][r.rank - 1] : '#' + String(r.rank).padStart(2);
-            return `${rankStr.padStart(3)}  ${r.name.padEnd(14)} ${fmt(r.totalTokens).padStart(8)}  ${String(r.sessions).padStart(4)}s  $${r.cost.toFixed(4).padStart(9)}`;
-          }).join('\n')}</div>` },
+          { type: 'header', text: '🏆 TOP 10' },
+          { type: 'sep' },
         );
+        const top10 = sorted.slice(0, 10);
+        const topRows = renderTier(top10, 'top');
+        appendLines(
+          { type: 'html', html: '<div class="top-grid">' + topRows.join('\n') + '</div>' },
+          { type: 'raw', text: '' },
+        );
+
+        // ═══ MIDDLE ═══
+        const midCount = total - 20;
+        if (midCount > 0) {
+          appendLines(
+            { type: 'header', text: '─ MIDDLE RANK (' + midCount + ' operators) ─' },
+            { type: 'sep' },
+          );
+          const mid = sorted.slice(10, bottomStart);
+          const midRows = renderTier(mid, 'mid');
+          appendLines(
+            { type: 'html', html: '<div class="top-grid">' + midRows.join('\n') + '</div>' },
+            { type: 'raw', text: '' },
+          );
+        }
+
+        // ═══ BOTTOM 10 ═══
+        appendLines(
+          { type: 'header', text: '⚠ BOTTOM 10' },
+          { type: 'sep' },
+        );
+        const bot10 = sorted.slice(bottomStart);
+        const botRows = renderTier(bot10, 'bot');
+        appendLines(
+          { type: 'html', html: '<div class="top-grid">' + botRows.join('\n') + '</div>' },
+          { type: 'raw', text: '' },
+        );
+
         appendLines({ type: 'raw', text: '' });
         break;
       }
