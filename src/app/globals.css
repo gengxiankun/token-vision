@@ -342,6 +342,127 @@ body {
 .top-card-bar-fill.cyan { background: var(--c-cyan); }
 .top-card-bar-fill.dim { background: #333333; }
 
+/* ── Tier Section Headers ───────────────────── */
+.tier-section {
+  margin: 8px 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tier-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+}
+.tier-section-label.top    { color: var(--c-green);  border-left: 3px solid var(--c-green); }
+.tier-section-label.middle { color: var(--c-cyan);   border-left: 3px solid var(--c-cyan); }
+.tier-section-label.bottom { color: var(--c-amber);  border-left: 3px solid var(--c-amber); }
+.tier-section-line {
+  flex: 1;
+  height: 1px;
+}
+.tier-section-line.top    { background: linear-gradient(90deg, var(--c-green), transparent); }
+.tier-section-line.middle { background: linear-gradient(90deg, var(--c-cyan), transparent);  }
+.tier-section-line.bottom { background: linear-gradient(90deg, var(--c-amber), transparent); }
+.tier-count {
+  font-size: 9px;
+  color: var(--c-dim);
+}
+
+/* ── Tier Row (compact list mode) ──────────── */
+.tier-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 2px 4px;
+  line-height: 1.7;
+  transition: background 0.15s;
+}
+.tier-row:hover {
+  background: var(--c-selection);
+}
+.tier-row.top    { color: var(--c-fg); }
+.tier-row.middle { color: var(--c-dim); }
+.tier-row.bottom { color: #444444; font-size: 10px; }
+.tier-row.bottom .tier-row-name { color: #555555; }
+
+.tier-row-rank {
+  min-width: 22px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 10px;
+}
+.tier-row-rank.top    { color: var(--c-green); }
+.tier-row-rank.middle { color: #666666; }
+.tier-row-rank.bottom { color: #553333; }
+
+.tier-row-badge {
+  min-width: 14px;
+  text-align: center;
+  font-size: 11px;
+}
+.tier-row-badge.gold   { color: var(--c-amber); }
+.tier-row-badge.silver { color: #aaaacc; }
+.tier-row-badge.bronze { color: #cc8844; }
+
+.tier-row-name {
+  min-width: 110px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tier-row-tokens {
+  min-width: 70px;
+  text-align: right;
+  font-weight: 600;
+}
+.tier-row-tokens.top    { color: var(--c-green); }
+.tier-row-tokens.middle { color: var(--c-fg); }
+.tier-row-tokens.bottom { color: #775555; }
+
+.tier-row-sessions {
+  min-width: 32px;
+  text-align: right;
+  font-size: 10px;
+}
+.tier-row-sessions.middle { color: #666666; }
+.tier-row-sessions.bottom { color: #553333; }
+
+.tier-row-cost {
+  min-width: 60px;
+  text-align: right;
+  font-size: 10px;
+}
+.tier-row-cost.middle { color: #666666; }
+.tier-row-cost.bottom { color: #553333; }
+
+/* ── Tier mini bar ──────────────────────────── */
+.tier-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: #141414;
+  min-width: 40px;
+}
+.tier-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease-out;
+}
+.tier-bar-fill.top    { background: var(--c-green); }
+.tier-bar-fill.middle { background: #2a4a2a; }
+.tier-bar-fill.bottom { background: #3a2020; }
+
+/* ── Bottom 10 special flash indicator ──────── */
+.tier-row.bottom .tier-row-name::after {
+  content: ' ⚠';
+  font-size: 8px;
+  color: #663333;
+}
+
 /* ── Bottom tier card (ranking) ──────────────── */
 .bot-card {
   border-color: #551010;

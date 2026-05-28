@@ -281,10 +281,15 @@ export default function Home() {
           );
         }
 
-        // Top 10 in rich card format
-        const top10 = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens).slice(0, 10);
+        // ── TOP 10 ──
+        const sortedAll = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens);
+        const top10 = sortedAll.slice(0, 10);
         if (top10.length > 0) {
-          appendLines({ type: 'header', text: 'TOP OPERATORS' }, { type: 'sep' });
+          appendLines({ type: 'header', text: 'OPERATOR RANKINGS' }, { type: 'sep' });
+          // Tier section header: TOP 10
+          appendLines({
+            type: 'html', html: `<div class="tier-section"><span class="tier-section-label top">⬥ TOP 10</span><div class="tier-section-line top"></div><span class="tier-count">${top10.length} operators</span></div>`
+          });
           const badges = ['●', '◆', '○'];
           const colors = ['green', 'amber', 'cyan'];
           const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
@@ -312,9 +317,42 @@ export default function Home() {
             );
           });
           rows.push('</div>');
-          appendLines(
-            { type: 'html', html: rows.join('\n') },
-          );
+          appendLines({ type: 'html', html: rows.join('\\n') });
+        }
+
+        // ── MIDDLE TIER ──
+        const totalN = sortedAll.length;
+        const midStart = 10;
+        const midEnd = Math.max(10, totalN - 10);
+        const middle = sortedAll.slice(midStart, midEnd);
+        if (middle.length > 0) {
+          appendLines({ type: 'raw', text: '' });
+          appendLines({
+            type: 'html', html: `<div class="tier-section"><span class="tier-section-label middle">⬡ MIDDLE TIER</span><div class="tier-section-line middle"></div><span class="tier-count">${middle.length} operators</span></div>`
+          });
+          const maxTokMid = Math.max(...middle.map(r => r.totalTokens));
+          middle.forEach((item) => {
+            const barPct = (item.totalTokens / maxTokMid) * 100;
+            appendLines({
+              type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
+            });
+          });
+        }
+
+        // ── BOTTOM 10 ──
+        const bottom = sortedAll.slice(midEnd);
+        if (bottom.length > 0) {
+          appendLines({ type: 'raw', text: '' });
+          appendLines({
+            type: 'html', html: `<div class="tier-section"><span class="tier-section-label bottom">⬡ BOTTOM 10</span><div class="tier-section-line bottom"></div><span class="tier-count">${bottom.length} operators</span></div>`
+          });
+          const maxTokBot = Math.max(...bottom.map(r => r.totalTokens));
+          bottom.forEach((item) => {
+            const barPct = maxTokBot > 0 ? (item.totalTokens / maxTokBot) * 100 : 0;
+            appendLines({
+              type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
+            });
+          });
         }
         appendLines({ type: 'raw', text: '' });
         break;
@@ -419,54 +457,66 @@ export default function Home() {
       }
 
       case 'search': {
-        appendLines(
-          { type: 'header', text: 'ALL OPERATORS (' + ranking.length + ')' },
-          { type: 'sep' },
-        );
-        const allSorted = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens);
-        const maxTokAll = Math.max(...allSorted.map(r => r.totalTokens));
-        const badges = ['●', '◆', '○'];
-        const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
-        const colors = ['green', 'amber', 'cyan'];
-        const rows: string[] = ['<div class="top-grid">'];
-        allSorted.forEach((item, i) => {
-          const badge = i < 3 ? badges[i] : `#${i + 1}`;
-          const badgeColor = i < 3 ? hexColors[i] : 'var(--c-dim)';
-          const clr = i < 3 ? colors[i] : 'dim';
-          const tokPct = (item.totalTokens / maxTokAll) * 100;
-          rows.push(
-            `<div class="top-card">`,
-            `  <div class="top-card-header">`,
-            `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
-            `    <span class="top-card-name">${item.name}</span>`,
-            `  </div>`,
-            `  <div class="top-card-metrics">`,
-            `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
-            `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
-            `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
-            `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
-            `  </div>`,
-            `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
-            `</div>`,
-          );
-        });
-        rows.push('</div>');
-        appendLines(
-          { type: 'html', html: rows.join('\n') },
-          { type: 'raw', text: '' },
-        );
-        break;
-      }
-
-      case 'search': {
         const query = (arg || '').toLowerCase().trim();
         if (!query) {
-          appendLines(
-            { type: 'amber', text: 'usage: search <name>  —  search for an operator by name' },
-            { type: 'raw', text: '' },
-          );
+          // Show ALL operators with tiered hierarchy
+          const allSorted = [...ranking].sort((a, b) => b.totalTokens - a.totalTokens);
+          const totalN = allSorted.length;
+          const midEnd = Math.max(10, totalN - 10);
+          appendLines({ type: 'header', text: 'ALL OPERATORS (' + totalN + ')' }, { type: 'sep' });
+
+          // TOP 10
+          const top10 = allSorted.slice(0, 10);
+          appendLines({
+            type: 'html', html: `<div class="tier-section"><span class="tier-section-label top">⬥ TOP 10</span><div class="tier-section-line top"></div><span class="tier-count">${top10.length} operators</span></div>`
+          });
+          const topBadges = ['●', '◆', '○'];
+          const topColors = ['green', 'amber', 'cyan'];
+          const maxTok = Math.max(...top10.map(r => r.totalTokens));
+          top10.forEach((item, i) => {
+            const badge = i < 3 ? topBadges[i] : `#${i + 1}`;
+            const badgeCls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+            const barPct = (item.totalTokens / maxTok) * 100;
+            const clr = i < 3 ? topColors[i] : 'top';
+            appendLines({
+              type: 'html', html: `<div class="tier-row top"><span class="tier-row-badge ${badgeCls}" style="min-width:16px">${badge}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens top">${fmt(item.totalTokens)}</span><span class="tier-row-sessions" style="color:var(--c-dim);min-width:32px;text-align:right;font-size:10px">${item.sessions}s</span><span class="tier-row-cost" style="color:var(--c-dim);min-width:60px;text-align:right;font-size:10px">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill top" style="width:${barPct}%"></div></div></div>`
+            });
+          });
+
+          // MIDDLE
+          const middle = allSorted.slice(10, midEnd);
+          if (middle.length > 0) {
+            appendLines({ type: 'raw', text: '' });
+            appendLines({
+              type: 'html', html: `<div class="tier-section"><span class="tier-section-label middle">⬡ MIDDLE TIER</span><div class="tier-section-line middle"></div><span class="tier-count">${middle.length} operators</span></div>`
+            });
+            const maxTokMid = Math.max(...middle.map(r => r.totalTokens));
+            middle.forEach((item) => {
+              const barPct = (item.totalTokens / maxTokMid) * 100;
+              appendLines({
+                type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
+              });
+            });
+          }
+
+          // BOTTOM 10
+          const bottom = allSorted.slice(midEnd);
+          if (bottom.length > 0) {
+            appendLines({ type: 'raw', text: '' });
+            appendLines({
+              type: 'html', html: `<div class="tier-section"><span class="tier-section-label bottom">⬡ BOTTOM 10</span><div class="tier-section-line bottom"></div><span class="tier-count">${bottom.length} operators</span></div>`
+            });
+            const maxTokBot = Math.max(...bottom.map(r => r.totalTokens));
+            bottom.forEach((item) => {
+              const barPct = maxTokBot > 0 ? (item.totalTokens / maxTokBot) * 100 : 0;
+              appendLines({
+                type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
+              });
+            });
+          }
+          appendLines({ type: 'raw', text: '' });
           break;
-        }
+        } else {
         const matches = ranking.filter(r => r.name.toLowerCase().includes(query));
         if (matches.length === 0) {
           appendLines(
@@ -511,6 +561,7 @@ export default function Home() {
         );
         break;
       }
+    }
 
       case 'charts': {
         appendLines({ type: 'header', text: 'TOKEN DISTRIBUTION' }, { type: 'sep' });
