@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "fetch-data": "node scripts/fetch-data.js",
-    "refresh": "node scripts/fetch-data.js && pnpm run build",
-    "deploy": "pnpm run fetch-data && pnpm run build && npx gh-pages -d out"
+    "fetch-data": "python3 scripts/generate-token-vision-data.py",
+    "refresh": "python3 scripts/generate-token-vision-data.py && pnpm run build",
+    "deploy": "python3 scripts/generate-token-vision-data.py && pnpm run build && npx gh-pages -d out"
   },
   "dependencies": {
     "next": "^16.2.6",
