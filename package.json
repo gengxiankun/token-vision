@@ -11,11 +11,13 @@
     "deploy": "python3 scripts/generate-token-vision-data.py && pnpm run build && npx gh-pages -d out"
   },
   "dependencies": {
+    "d3": "^7.9.0",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
