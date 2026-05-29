@@ -4,3 +4,4 @@ out/
 public/data/archive/
 *.tsbuildinfo
 next-env.d.ts
+scripts/__pycache__/
