@@ -645,8 +645,10 @@ export default function Home() {
           const maxV = Math.max(...tier.items.map(r => r.totalTokens));
           const rows: string[] = ['<div class="top-grid">'];
           tier.items.forEach((item, i) => {
-            const idx = item.rank - 1;
-            const badge = idx < 3 ? badges[idx] : '#' + String(item.rank);
+            const offset = tier.cls === 'top' ? 0 : tier.cls === 'middle' ? 10 : total - 10;
+            const wisdomRank = offset + i + 1;
+            const idx = wisdomRank - 1;
+            const badge = idx < 3 ? badges[idx] : '#' + String(wisdomRank);
             const badgeColor = idx < 3 ? hexColors[idx] : (tier.cls === 'bottom' ? 'var(--c-red)' : 'var(--c-dim)');
             const clr = idx < 3 ? colors[idx] : (tier.cls === 'bottom' ? 'red' : 'dim');
             const tokPct = (item.totalTokens / maxV) * 100;
