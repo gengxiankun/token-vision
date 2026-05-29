@@ -721,3 +721,129 @@ body {
 /* ── Light mode: disable CRT effects ────────── */
 .light .terminal-root::after { display: none; }
 .light .terminal-root::before { display: none; }
+
+/* ── Star Field — Cosmic Wisdom Visualization ── */
+.star-field-container {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  padding: 30px 20px;
+  overflow: hidden;
+}
+
+/* Background stars (tiny dots) */
+.star-field-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.3;
+}
+
+/* Star grid layout */
+.star-galaxy {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 16px;
+  position: relative;
+  z-index: 1;
+  padding: 20px 10px;
+}
+
+.star-system {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.3s ease;
+}
+
+.star-system:hover {
+  transform: scale(1.15);
+  z-index: 10;
+}
+
+.star-body {
+  border-radius: 50%;
+  position: relative;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+/* Twinkle — per-star via inline animation-delay */
+.star-body.twinkle {
+  animation: startwinkle 4s ease-in-out infinite;
+}
+
+@keyframes startwinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  25% { opacity: 0.75; }
+  50% { opacity: 1; transform: scale(1.05); }
+  75% { opacity: 0.8; }
+}
+
+/* Spectral classes */
+.star-o {
+  background: radial-gradient(circle at 35% 35%, #fff, #aaccff 35%, #4488ff 100%);
+  box-shadow: 0 0 20px 8px rgba(68,136,255,0.5), 0 0 60px 20px rgba(68,136,255,0.15);
+}
+.star-b {
+  background: radial-gradient(circle at 35% 35%, #fff, #bbddff 35%, #6699ff 100%);
+  box-shadow: 0 0 14px 5px rgba(102,153,255,0.4), 0 0 40px 12px rgba(102,153,255,0.12);
+}
+.star-a {
+  background: radial-gradient(circle at 35% 35%, #fff, #eee 35%, #ccc 100%);
+  box-shadow: 0 0 10px 4px rgba(200,200,220,0.35), 0 0 30px 8px rgba(200,200,220,0.1);
+}
+.star-f {
+  background: radial-gradient(circle at 35% 35%, #fff, #ffeecc 35%, #ffdd88 100%);
+  box-shadow: 0 0 8px 3px rgba(255,221,136,0.35), 0 0 20px 6px rgba(255,221,136,0.1);
+}
+.star-g {
+  background: radial-gradient(circle at 35% 35%, #fff, #ffeeaa 35%, #ffcc44 100%);
+  box-shadow: 0 0 6px 3px rgba(255,204,68,0.3), 0 0 16px 5px rgba(255,204,68,0.1);
+}
+.star-m {
+  background: radial-gradient(circle at 35% 35%, #ffccaa, #ff8844 35%, #cc4400 100%);
+  box-shadow: 0 0 5px 2px rgba(255,136,68,0.25), 0 0 12px 4px rgba(255,136,68,0.08);
+}
+
+.star-name {
+  font-size: 9px;
+  color: var(--c-dim);
+  text-align: center;
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.star-spectral {
+  font-size: 8px;
+  opacity: 0.45;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* Star info tooltip on hover */
+.star-system:hover .star-name {
+  color: var(--c-green);
+  white-space: normal;
+  overflow: visible;
+  z-index: 20;
+  position: relative;
+  background: var(--c-bg);
+  padding: 2px 4px;
+  border-radius: 2px;
+  border: 1px solid var(--c-border);
+  max-width: 140px;
+}

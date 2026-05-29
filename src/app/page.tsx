@@ -675,6 +675,96 @@ export default function Home() {
         break;
       }
 
+      case 'stars':
+      case 'cosmos':
+      case 'galaxy': {
+        const starSorted = [...ranking].sort((a, b) => (b.wisdomScore ?? 0) - (a.wisdomScore ?? 0));
+        const starLen = starSorted.length;
+        const wsMax = starSorted[0]?.wisdomScore ?? 999;
+        const wsMin = starSorted[starLen - 1]?.wisdomScore ?? 349;
+
+        // Star classification by wisdom rank tier
+        const getStarClass = (rank: number): { spec: string; type: string; css: string } => {
+          if (rank <= 3)    return { spec: 'O', type: 'Blue Supergiant', css: 'star-o' };
+          if (rank <= 10)   return { spec: 'B', type: 'Blue Giant', css: 'star-b' };
+          if (rank <= 20)   return { spec: 'A', type: 'Main Sequence', css: 'star-a' };
+          if (rank <= 30)   return { spec: 'F', type: 'Yellow-White', css: 'star-f' };
+          if (rank <= 40)   return { spec: 'G', type: 'Yellow Dwarf', css: 'star-g' };
+          return { spec: 'M', type: 'Red Dwarf', css: 'star-m' };
+        };
+
+        // Map wisdom score to star diameter: 20px ~ 110px
+        const starSize = (ws: number): number =>
+          Math.round(20 + ((ws - wsMin) / Math.max(wsMax - wsMin, 1)) * 90);
+
+        // Generate background stars
+        const bgStars: string[] = [];
+        const rng = (seed: number) => { let s = seed; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; };
+        const rand = rng(42);
+        for (let i = 0; i < 60; i++) {
+          const x = rand() * 95 + 2;
+          const y = rand() * 90 + 5;
+          const s = rand() * 3 + 0.5;
+          const o = rand() * 0.4 + 0.1;
+          const d = rand() * 5;
+          bgStars.push(`<div class="bg-star" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${o.toFixed(2)};animation-delay:${d.toFixed(1)}s"></div>`);
+        }
+
+        // Spectral legend
+        const legend = [
+          '<div style="display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;margin-bottom:8px;background:var(--c-sbar-bg);border-radius:4px;font-size:10px">',
+          '<span style="color:var(--c-dim)">spectral legend:</span>',
+          '<span style="color:#6699ff">● O Blue Supergiant</span>',
+          '<span style="color:#88bbff">● B Blue Giant</span>',
+          '<span style="color:#ccc">● A Main Sequence</span>',
+          '<span style="color:#ffdd88">● F Yellow-White</span>',
+          '<span style="color:#ffcc44">● G Yellow Dwarf</span>',
+          '<span style="color:#ff8844">● M Red Dwarf</span>',
+          `</div>`,
+        ].join('\\n');
+
+        // Build star galaxies
+        const starRows: string[] = ['<div class="star-field-container">'];
+        starRows.push('<div class="star-field-bg">' + bgStars.join('\\n') + '</div>');
+        starRows.push('<div class="star-galaxy">');
+        starSorted.forEach((item, i) => {
+          const rank = i + 1;
+          const { spec, type, css } = getStarClass(rank);
+          const size = starSize(item.wisdomScore ?? 0);
+          const delay = (rand() * 4).toFixed(1);
+          starRows.push(
+            `<div class="star-system">`,
+            `  <div class="star-body twinkle ${css}" style="width:${size}px;height:${size}px;animation-delay:${delay}s" title="${item.name} — Class ${spec} ${type} — Wisdom ${item.wisdomScore}"></div>`,
+            `  <div class="star-name">${item.name}</div>`,
+            `  <div class="star-spectral">${spec} ${type} · ${item.wisdomScore}</div>`,
+            `</div>`,
+          );
+        });
+        starRows.push('</div>');
+        starRows.push('</div>');
+
+        appendLines(
+          { type: 'header', text: `★ COSMIC WISDOM — ${starLen} Stars in the Galaxy` },
+          { type: 'sep' },
+          { type: 'raw', text: '' },
+          { type: 'html', html: legend },
+          { type: 'raw', text: '' },
+          { type: 'html', html: starRows.join('\\n') },
+          { type: 'raw', text: '' },
+        );
+
+        // Show top 5 star data
+        appendLines({ type: 'header', text: 'BRIGHTEST STARS' }, { type: 'sep' });
+        starSorted.slice(0, 5).forEach((item, i) => {
+          const { spec, type: stype } = getStarClass(i + 1);
+          appendLines(
+            { type: 'html', html: `<div class="top-line"><span style="min-width:60px;font-weight:700;color:var(--c-cyan)">★ ${item.name}</span><span style="min-width:100px" class="term-dim">Class ${spec} ${stype}</span><span style="min-width:120px;text-align:right">Wisdom ${item.wisdomScore}</span><span class="term-dim" style="min-width:60px;text-align:right">${fmt(item.totalTokens)} tokens</span></div>` },
+          );
+        });
+        appendLines({ type: 'raw', text: '' }, { type: 'sep' });
+        break;
+      }
+
       case 'help': {
         appendLines(
           { type: 'header', text: 'AVAILABLE COMMANDS' },
@@ -685,6 +775,7 @@ export default function Home() {
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  wisdom     —  Wisdom score ranking (alias: smart)' },
+          { type: 'raw', text: '  stars      —  Cosmic wisdom star map (alias: cosmos, galaxy)' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
           { type: 'raw', text: '  refresh    —  Re-fetch telemetry data from server' },
           { type: 'raw', text: '  help       —  Show this help' },
@@ -708,7 +799,7 @@ export default function Home() {
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
           { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 15min)' },
           { type: 'raw', text: '' },
-          { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | search | refresh | help | clear' },
+          { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | wisdom | stars | search | refresh | help | clear' },
           { type: 'raw', text: '  Mode: ☀ Click the sun/moon icon in top-right to toggle day/night' },
           { type: 'raw', text: '' },
         );
