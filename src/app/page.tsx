@@ -84,7 +84,23 @@ export default function Home() {
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [cmdIdx, setCmdIdx] = useState(-1);
   const [input, setInput] = useState('');
-  const [mode, setMode] = useState<'dark' | 'light'>('dark');
+  /* ── Theme: system default + localStorage persistence ── */
+  const getInitialMode = (): 'dark' | 'light' => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('token-vision-theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    }
+    return 'dark';
+  };
+  const [mode, setMode] = useState<'dark' | 'light'>(getInitialMode);
+
+  /* ── Persist theme preference ── */
+  useEffect(() => {
+    localStorage.setItem('token-vision-theme', mode);
+  }, [mode]);
+
+  /* ── Boot sequence ── */
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [bootDots, setBootDots] = useState('');
