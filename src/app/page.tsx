@@ -293,7 +293,7 @@ export default function Home() {
           middle.forEach((item) => {
             const barPct = (item.totalTokens / maxTokMid) * 100;
             appendLines({
-              type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
+              type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><span class="tier-row-sources middle" style="min-width:22px;text-align:right;font-size:10px">${item.sources}</span><span class="tier-row-wisdom middle" style="min-width:22px;text-align:right;font-size:10px">${item.wisdomScore ?? '—'}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
             });
           });
         }
@@ -309,7 +309,7 @@ export default function Home() {
           bottom.forEach((item) => {
             const barPct = maxTokBot > 0 ? (item.totalTokens / maxTokBot) * 100 : 0;
             appendLines({
-              type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
+              type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><span class="tier-row-sources bottom" style="min-width:22px;text-align:right;font-size:10px">${item.sources}</span><span class="tier-row-wisdom bottom" style="min-width:22px;text-align:right;font-size:10px">${item.wisdomScore ?? '—'}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
             });
           });
         }
@@ -454,7 +454,7 @@ export default function Home() {
             middle.forEach((item) => {
               const barPct = (item.totalTokens / maxTokMid) * 100;
               appendLines({
-                type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
+                type: 'html', html: `<div class="tier-row middle"><span class="tier-row-rank middle">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens middle">${fmt(item.totalTokens)}</span><span class="tier-row-sessions middle">${item.sessions}s</span><span class="tier-row-cost middle">$${item.cost.toFixed(3)}</span><span class="tier-row-sources middle" style="min-width:22px;text-align:right;font-size:10px">${item.sources}</span><span class="tier-row-wisdom middle" style="min-width:22px;text-align:right;font-size:10px">${item.wisdomScore ?? '—'}</span><div class="tier-bar-wrap"><div class="tier-bar-fill middle" style="width:${barPct}%"></div></div></div>`
               });
             });
           }
@@ -470,7 +470,7 @@ export default function Home() {
             bottom.forEach((item) => {
               const barPct = maxTokBot > 0 ? (item.totalTokens / maxTokBot) * 100 : 0;
               appendLines({
-                type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
+                type: 'html', html: `<div class="tier-row bottom"><span class="tier-row-rank bottom">#${item.rank}</span><span class="tier-row-name">${item.name}</span><span class="tier-row-tokens bottom">${fmt(item.totalTokens)}</span><span class="tier-row-sessions bottom">${item.sessions}s</span><span class="tier-row-cost bottom">$${item.cost.toFixed(3)}</span><span class="tier-row-sources bottom" style="min-width:22px;text-align:right;font-size:10px">${item.sources}</span><span class="tier-row-wisdom bottom" style="min-width:22px;text-align:right;font-size:10px">${item.wisdomScore ?? '—'}</span><div class="tier-bar-wrap"><div class="tier-bar-fill bottom" style="width:${barPct}%"></div></div></div>`
               });
             });
           }
