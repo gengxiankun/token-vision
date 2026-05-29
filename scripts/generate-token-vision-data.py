@@ -193,13 +193,30 @@ def collect_and_optimize():
     shutil.rmtree(workdir, ignore_errors=True)
     return ranked
 
+def compute_wisdom(tokens, sessions, sources):
+    """智慧量原始分：log10(tokens)×200 + √sessions×60 + sources×50"""
+    import math
+    tok_factor = math.log10(max(tokens, 1)) * 200
+    ses_factor = math.sqrt(sessions) * 60
+    src_factor = sources * 50
+    return tok_factor + ses_factor + src_factor
+
+
 def format_as_datav2(ranked):
     """Convert ranked list to token-vision data.json format (v2)."""
+    import math
     total_tokens = sum(d["tokens"] for _, d in ranked)
     total_cost = total_tokens * 0.0000003  # rough cost estimate
     total_sessions = sum(d["sessions"] for _, d in ranked)
     total_people = len(ranked)
     now = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
+
+    # First pass: compute raw wisdom scores
+    wisdom_raws = []
+    for _, data in ranked:
+        raw = compute_wisdom(data["tokens"], data["sessions"], data["machines"])
+        wisdom_raws.append(raw)
+    max_raw = max(wisdom_raws) if wisdom_raws else 1
 
     stats = {
         "totalPeople": total_people,
@@ -209,12 +226,16 @@ def format_as_datav2(ranked):
         "avgTokensPerPerson": round(total_tokens / total_people) if total_people > 0 else 0,
         "avgCostPerPerson": round(total_cost / total_people, 6) if total_people > 0 else 0,
         "avgSessionsPerPerson": round(total_sessions / total_people, 1) if total_people > 0 else 0,
+        "totalWisdom": round(sum(wisdom_raws) / max_raw * 1000),  # normalized sum
+        "avgWisdomPerPerson": round(sum(wisdom_raws) / max_raw * 1000 / max(total_people, 1)),
     }
 
     ranking = []
     top5 = []
     for i, (name, data) in enumerate(ranked, 1):
         cost = round(data["tokens"] * 0.0000003, 6)
+        raw = wisdom_raws[i - 1]
+        wisdom = min(999, int(raw / max_raw * 1000))
         item = {
             "rank": i,
             "name": name,
@@ -222,6 +243,7 @@ def format_as_datav2(ranked):
             "cost": cost,
             "sessions": data["sessions"],
             "sources": data["machines"],
+            "wisdomScore": wisdom,
             "updatedAt": now,
         }
         ranking.append(item)
@@ -234,7 +256,7 @@ def format_as_datav2(ranked):
         "stats": stats,
         "top5": top5,
         "ranking": ranking,
-        "detail": [],  # detail (per-instance) not provided by optimized pipeline
+        "detail": [],
     }
 
 def main():

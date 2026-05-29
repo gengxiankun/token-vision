@@ -10,6 +10,7 @@ interface RankingItem {
   cost: number;
   sessions: number;
   sources: number;
+  wisdomScore?: number;
   updatedAt: string;
 }
 
@@ -34,6 +35,8 @@ interface Stats {
   avgTokensPerPerson: number;
   avgCostPerPerson: number;
   avgSessionsPerPerson: number;
+  totalWisdom?: number;
+  avgWisdomPerPerson?: number;
 }
 
 interface Data {
@@ -227,6 +230,7 @@ export default function Home() {
               `  <div class="stat-card"><span class="stat-label">total cost</span><span class="stat-value amber">$${stats.totalCost.toFixed(2)}</span></div>`,
               `  <div class="stat-card"><span class="stat-label">sessions</span><span class="stat-value green">${stats.totalSessions}</span></div>`,
               `  <div class="stat-card"><span class="stat-label">avg tokens/user</span><span class="stat-value cyan">${fmt(Math.round(stats.avgTokensPerPerson))}</span></div>`,
+              `  <div class="stat-card"><span class="stat-label">total wisdom</span><span class="stat-value" style="color:var(--c-cyan)">${stats.totalWisdom ?? '—'}</span></div>`,
               '</div>',
             ].join('\n') },
             { type: 'raw', text: '' },
@@ -263,6 +267,7 @@ export default function Home() {
               `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">wisdom</span><span class="metric-value cyan">${item.wisdomScore ?? '—'}</span></div>`,
               `  </div>`,
               `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
               `</div>`,
@@ -357,6 +362,7 @@ export default function Home() {
               `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
               `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">wisdom</span><span class="metric-value cyan">${item.wisdomScore ?? '—'}</span></div>`,
               `  </div>`,
               `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
               `</div>`,
@@ -499,6 +505,7 @@ export default function Home() {
             `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
             `    <div class="top-card-metric"><span class="metric-label">cost</span><span class="metric-value amber">$${item.cost.toFixed(3)}</span></div>`,
             `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+            `    <div class="top-card-metric"><span class="metric-label">wisdom</span><span class="metric-value cyan">${item.wisdomScore ?? '—'}</span></div>`,
             `  </div>`,
             `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
             `</div>`,
@@ -613,6 +620,61 @@ export default function Home() {
         break;
       }
 
+      case 'wisdom':
+      case 'smart': {
+        const sorted = [...ranking].sort((a, b) => (b.wisdomScore ?? 0) - (a.wisdomScore ?? 0));
+        const total = sorted.length;
+        appendLines({ type: 'header', text: '🏛 WISDOM RANKING — 智慧量排行' }, { type: 'sep' });
+        appendLines({ type: 'dim', text: '  智慧量 = log₁₀(tokens)×200 + √sessions×60 + sources×50 → 归一化 0-999' });
+        appendLines({ type: 'sep' }, { type: 'raw', text: '' });
+
+        const badges = ['●', '◆', '○'];
+        const hexColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)'];
+        const colors = ['green', 'amber', 'cyan'];
+        const maxTok = Math.max(...sorted.map(r => r.totalTokens));
+
+        const tiers = [
+          { label: '🏆 TOP 10', cls: 'top', items: sorted.slice(0, 10) },
+          { label: `⬡ MIDDLE ${total - 20}`, cls: 'middle', items: sorted.slice(10, total - 10) },
+          { label: '⚠ BOTTOM 10', cls: 'bottom', items: sorted.slice(total - 10) },
+        ];
+
+        for (const tier of tiers) {
+          if (tier.items.length === 0) continue;
+          appendLines({ type: 'html', html: `<div class="tier-section"><span class="tier-section-label ${tier.cls}">${tier.label}</span><div class="tier-section-line ${tier.cls}"></div><span class="tier-count">${tier.items.length} operators</span></div>` });
+          const maxV = Math.max(...tier.items.map(r => r.totalTokens));
+          const rows: string[] = ['<div class="top-grid">'];
+          tier.items.forEach((item, i) => {
+            const idx = item.rank - 1;
+            const badge = idx < 3 ? badges[idx] : '#' + String(item.rank);
+            const badgeColor = idx < 3 ? hexColors[idx] : (tier.cls === 'bottom' ? 'var(--c-red)' : 'var(--c-dim)');
+            const clr = idx < 3 ? colors[idx] : (tier.cls === 'bottom' ? 'red' : 'dim');
+            const tokPct = (item.totalTokens / maxV) * 100;
+            rows.push(
+              `<div class="top-card ${tier.cls === 'bottom' ? 'bot-card' : ''}">`,
+              `  <div class="top-card-header">`,
+              `    <span class="top-card-badge" style="color:${badgeColor}">${badge}</span>`,
+              `    <span class="top-card-name">${item.name}</span>`,
+              `  </div>`,
+              `  <div class="top-card-metrics">`,
+              `    <div class="top-card-metric"><span class="metric-label">wisdom</span><span class="metric-value cyan" style="font-size:16px;font-weight:700">${item.wisdomScore ?? '—'}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">tokens</span><span class="metric-value ${clr}">${fmt(item.totalTokens)}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">sessions</span><span class="metric-value">${item.sessions}</span></div>`,
+              `    <div class="top-card-metric"><span class="metric-label">machines</span><span class="metric-value dim">${item.sources}</span></div>`,
+              `  </div>`,
+              `  <div class="top-card-bar"><div class="top-card-bar-fill ${clr}" style="width:${tokPct}%"></div></div>`,
+              `</div>`,
+            );
+          });
+          rows.push('</div>');
+          appendLines({ type: 'html', html: rows.join('\\n') });
+          appendLines({ type: 'raw', text: '' });
+        }
+
+        appendLines({ type: 'sep' });
+        break;
+      }
+
       case 'help': {
         appendLines(
           { type: 'header', text: 'AVAILABLE COMMANDS' },
@@ -622,6 +684,7 @@ export default function Home() {
           { type: 'raw', text: '  search     —  Search operators by name (e.g. search alice)' },
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
+          { type: 'raw', text: '  wisdom     —  Wisdom score ranking (alias: smart)' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
           { type: 'raw', text: '  refresh    —  Re-fetch telemetry data from server' },
           { type: 'raw', text: '  help       —  Show this help' },
