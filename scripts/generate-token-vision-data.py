@@ -262,15 +262,36 @@ def format_as_datav2(ranked):
 def main():
     token_vision_dir = os.path.expanduser("~/token-vision/public/data")
     os.makedirs(token_vision_dir, exist_ok=True)
+    out_path = os.path.join(token_vision_dir, "data.json")
 
     print("🔄 开始采集 + 优化...", file=sys.stderr)
     ranked = collect_and_optimize()
-    print(f"📊 采集完成: {len(ranked)}人", file=sys.stderr)
 
-    data = format_as_datav2(ranked)
+    if ranked:
+        print(f"📊 采集完成: {len(ranked)}人", file=sys.stderr)
+        data = format_as_datav2(ranked)
+    else:
+        # Fallback: use existing data.json and just ensure wisdomScore
+        print("⚠️ SSH采集失败，使用缓存数据 + 添加智慧量...", file=sys.stderr)
+        if os.path.exists(out_path):
+            with open(out_path) as f:
+                data = json.load(f)
+            import math
+            raws = [math.log10(max(r["totalTokens"], 1)) * 200 + math.sqrt(r["sessions"]) * 60 + r["sources"] * 50
+                    for r in data["ranking"]]
+            max_raw = max(raws) if raws else 1
+            for r, raw in zip(data["ranking"], raws):
+                r["wisdomScore"] = min(999, int(raw / max_raw * 1000))
+            for r in data.get("top5", []):
+                raw = math.log10(max(r["totalTokens"], 1)) * 200 + math.sqrt(r["sessions"]) * 60 + r["sources"] * 50
+                r["wisdomScore"] = min(999, int(raw / max_raw * 1000))
+            data["stats"]["totalWisdom"] = round(sum(raws) / max_raw * 1000)
+            data["stats"]["avgWisdomPerPerson"] = round(sum(raws) / max_raw * 1000 / max(len(data["ranking"]), 1))
+        else:
+            print("❌ 无缓存数据可用，跳过", file=sys.stderr)
+            return
 
     # Write data.json
-    out_path = os.path.join(token_vision_dir, "data.json")
     with open(out_path, "w") as f:
         json.dump(data, f, ensure_ascii=False)
     print(f"✅ 已写入: {out_path}", file=sys.stderr)
