@@ -1,9 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* ── Terminal Color Palette ─────────────────── */
-:root {
+:root,
+.dark {
   --c-bg: #0a0a0a;
   --c-fg: #c8c8c8;
   --c-green: #33ff33;
@@ -17,6 +16,85 @@
   --c-sbar-bg: #141414;
   --c-prompt: #00ff9d;
   --c-selection: rgba(51, 255, 51, 0.12);
+  --c-silver: #aaaacc;
+  --c-bronze: #cc8844;
+  --c-bot-card-bg: rgba(255, 30, 30, 0.04);
+  --c-bot-card-border: #551010;
+  --c-tbar-mode-color: var(--c-dim);
+  --c-donut-hole-bg: var(--c-bg);
+  --c-progress-bg: #1a1a1a;
+  --c-bar-bg: #141414;
+  --c-tier-bottom-text: #444444;
+  --c-tier-bottom-name: #555555;
+  --c-tier-bottom-rank: #553333;
+  --c-tier-bottom-tokens: #775555;
+  --c-tier-bottom-sessions: #553333;
+  --c-tier-bottom-cost: #553333;
+  --c-tier-bottom-bar: #3a2020;
+  --c-tier-mid-bar: #2a4a2a;
+  --c-tier-bottom-name-after: #663333;
+  --c-middle-text: var(--c-dim);
+  --c-middle-rank: #666666;
+  --c-middle-sessions: #666666;
+  --c-middle-cost: #666666;
+  --c-card-bg: rgba(255, 255, 255, 0.015);
+  --c-mode-bg: #0d0d0d;
+  --c-mode-border: #2a2a2a;
+  --c-mode-hover: #1a3a1a;
+  --c-scanlines: rgba(0, 0, 0, 0.06);
+  --c-vignette: rgba(0, 0, 0, 0.5);
+  --c-t3: #333;
+  --c-t3-sessions: #333;
+  --c-t3-cost: #333;
+  --c-t3-rank: #333;
+  --c-t3-name: #333;
+}
+
+/* ── Light Mode Terminal ────────────────────── */
+.light {
+  --c-bg: #f5f5f0;
+  --c-fg: #1a1a1a;
+  --c-green: #1a7a1a;
+  --c-amber: #b87a00;
+  --c-cyan: #0066aa;
+  --c-red: #cc2222;
+  --c-dim: #888888;
+  --c-border: #d0d0d0;
+  --c-highlight: #000000;
+  --c-tbar-bg: #e8e8e3;
+  --c-sbar-bg: #e0e0db;
+  --c-prompt: #1a7a1a;
+  --c-selection: rgba(0, 100, 0, 0.12);
+  --c-silver: #7777aa;
+  --c-bronze: #aa6622;
+  --c-bot-card-bg: rgba(200, 20, 20, 0.04);
+  --c-bot-card-border: #cc5555;
+  --c-tbar-mode-color: #666666;
+  --c-donut-hole-bg: var(--c-bg);
+  --c-progress-bg: #e0e0db;
+  --c-bar-bg: #d8d8d3;
+  --c-tier-bottom-text: #777777;
+  --c-tier-bottom-name: #666666;
+  --c-tier-bottom-rank: #885555;
+  --c-tier-bottom-tokens: #995555;
+  --c-tier-bottom-sessions: #885555;
+  --c-tier-bottom-cost: #885555;
+  --c-tier-bottom-bar: #c08888;
+  --c-tier-mid-bar: #88aacc;
+  --c-tier-bottom-name-after: #aa5555;
+  --c-middle-text: #666666;
+  --c-middle-rank: #999999;
+  --c-middle-sessions: #888888;
+  --c-middle-cost: #888888;
+  --c-card-bg: rgba(0, 0, 0, 0.02);
+  --c-mode-bg: #e8e8e3;
+  --c-mode-border: #c8c8c3;
+  --c-mode-hover: #d0ecd0;
+  --c-t3: #ccc;
+  --c-t3-sessions: #999;
+  --c-t3-cost: #999;
+  --c-t3-rank: #aaa;
+  --c-t3-name: #bbb;
 }
 
 * { box-sizing: border-box; }
@@ -76,6 +154,34 @@ body {
   font-size: 11px;
   color: var(--c-dim);
   letter-spacing: 0.05em;
+}
+
+/* ── Mode Toggle Button ─────────────────────── */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--c-mode-border);
+  background: var(--c-mode-bg);
+  color: var(--c-tbar-mode-color);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.mode-toggle:hover {
+  background: var(--c-mode-hover);
+  border-color: var(--c-green);
+  color: var(--c-highlight);
+}
+
+.light .mode-toggle:hover {
+  border-color: var(--c-green);
+  color: var(--c-fg);
 }
 
 /* ── Terminal Body (output area) ────────────── */
@@ -171,7 +277,7 @@ body {
 /* ── Progress bars ──────────────────────────── */
 .term-pbar-bg {
   height: 14px;
-  background: #1a1a1a;
+  background: var(--c-progress-bg);
   position: relative;
   overflow: hidden;
   border-radius: 0;
@@ -224,7 +330,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: rgba(255,255,255,0.02);
+  background: var(--c-card-bg);
 }
 
 .stat-label {
@@ -252,25 +358,19 @@ body {
   margin-bottom: 6px;
 }
 
-/* Tablet: 3 columns */
 @media (max-width: 1024px) {
-  .top-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .top-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* Mobile: 1 column */
 @media (max-width: 640px) {
-  .top-grid {
-    grid-template-columns: 1fr;
-  }
+  .top-grid { grid-template-columns: 1fr; }
 }
 
 .top-card {
   border: 1px solid var(--c-border);
   padding: 10px 12px;
   font-size: 11px;
-  background: rgba(255,255,255,0.015);
+  background: var(--c-card-bg);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -326,7 +426,7 @@ body {
 
 .top-card-bar {
   height: 3px;
-  background: #1a1a1a;
+  background: var(--c-progress-bg);
   overflow: hidden;
   margin-top: 2px;
 }
@@ -340,7 +440,7 @@ body {
 .top-card-bar-fill.green { background: var(--c-green); }
 .top-card-bar-fill.amber { background: var(--c-amber); }
 .top-card-bar-fill.cyan { background: var(--c-cyan); }
-.top-card-bar-fill.dim { background: #333333; }
+.top-card-bar-fill.dim { background: var(--c-dim); }
 
 /* ── Tier Section Headers ───────────────────── */
 .tier-section {
@@ -385,9 +485,9 @@ body {
   background: var(--c-selection);
 }
 .tier-row.top    { color: var(--c-fg); }
-.tier-row.middle { color: var(--c-dim); }
-.tier-row.bottom { color: #444444; font-size: 10px; }
-.tier-row.bottom .tier-row-name { color: #555555; }
+.tier-row.middle { color: var(--c-middle-text); }
+.tier-row.bottom { color: var(--c-tier-bottom-text); font-size: 10px; }
+.tier-row.bottom .tier-row-name { color: var(--c-tier-bottom-name); }
 
 .tier-row-rank {
   min-width: 22px;
@@ -396,8 +496,8 @@ body {
   font-size: 10px;
 }
 .tier-row-rank.top    { color: var(--c-green); }
-.tier-row-rank.middle { color: #666666; }
-.tier-row-rank.bottom { color: #553333; }
+.tier-row-rank.middle { color: var(--c-middle-rank); }
+.tier-row-rank.bottom { color: var(--c-tier-bottom-rank); }
 
 .tier-row-badge {
   min-width: 14px;
@@ -405,8 +505,8 @@ body {
   font-size: 11px;
 }
 .tier-row-badge.gold   { color: var(--c-amber); }
-.tier-row-badge.silver { color: #aaaacc; }
-.tier-row-badge.bronze { color: #cc8844; }
+.tier-row-badge.silver { color: var(--c-silver); }
+.tier-row-badge.bronze { color: var(--c-bronze); }
 
 .tier-row-name {
   min-width: 110px;
@@ -423,29 +523,29 @@ body {
 }
 .tier-row-tokens.top    { color: var(--c-green); }
 .tier-row-tokens.middle { color: var(--c-fg); }
-.tier-row-tokens.bottom { color: #775555; }
+.tier-row-tokens.bottom { color: var(--c-tier-bottom-tokens); }
 
 .tier-row-sessions {
   min-width: 32px;
   text-align: right;
   font-size: 10px;
 }
-.tier-row-sessions.middle { color: #666666; }
-.tier-row-sessions.bottom { color: #553333; }
+.tier-row-sessions.middle { color: var(--c-middle-sessions); }
+.tier-row-sessions.bottom { color: var(--c-tier-bottom-sessions); }
 
 .tier-row-cost {
   min-width: 60px;
   text-align: right;
   font-size: 10px;
 }
-.tier-row-cost.middle { color: #666666; }
-.tier-row-cost.bottom { color: #553333; }
+.tier-row-cost.middle { color: var(--c-middle-cost); }
+.tier-row-cost.bottom { color: var(--c-tier-bottom-cost); }
 
 /* ── Tier mini bar ──────────────────────────── */
 .tier-bar-wrap {
   flex: 1;
   height: 4px;
-  background: #141414;
+  background: var(--c-bar-bg);
   min-width: 40px;
 }
 .tier-bar-fill {
@@ -453,20 +553,20 @@ body {
   transition: width 0.5s ease-out;
 }
 .tier-bar-fill.top    { background: var(--c-green); }
-.tier-bar-fill.middle { background: #2a4a2a; }
-.tier-bar-fill.bottom { background: #3a2020; }
+.tier-bar-fill.middle { background: var(--c-tier-mid-bar); }
+.tier-bar-fill.bottom { background: var(--c-tier-bottom-bar); }
 
 /* ── Bottom 10 special flash indicator ──────── */
 .tier-row.bottom .tier-row-name::after {
   content: ' ⚠';
   font-size: 8px;
-  color: #663333;
+  color: var(--c-tier-bottom-name-after);
 }
 
 /* ── Bottom tier card (ranking) ──────────────── */
 .bot-card {
-  border-color: #551010;
-  background: rgba(255, 30, 30, 0.04);
+  border-color: var(--c-bot-card-border);
+  background: var(--c-bot-card-bg);
 }
 
 .top-bar-row {
@@ -483,15 +583,6 @@ body {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-}
-
-/* ── ASCII table ────────────────────────────── */
-.ascii-table-wrap {
-  font-size: 11px;
-  line-height: 1.7;
-  white-space: pre;
-  font-family: inherit;
-  color: var(--c-fg);
 }
 
 /* ── Chart area ─────────────────────────────── */
@@ -523,7 +614,7 @@ body {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: var(--c-bg);
+  background: var(--c-donut-hole-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -561,6 +652,15 @@ body {
   padding-left: 12px;
 }
 
+/* ── ASCII table ────────────────────────────── */
+.ascii-table-wrap {
+  font-size: 11px;
+  line-height: 1.7;
+  white-space: pre;
+  font-family: inherit;
+  color: var(--c-fg);
+}
+
 /* ── ASCII banner ───────────────────────────── */
 .ascii-banner {
   white-space: pre;
@@ -583,11 +683,11 @@ body {
 /* ── Selection ──────────────────────────────── */
 ::selection {
   background: var(--c-selection);
-  color: #fff;
+  color: var(--c-fg);
 }
 
-/* ── CRT scanline overlay ───────────────────── */
-.terminal-root::after {
+/* ── CRT scanline overlay (dark mode only) ──── */
+.dark .terminal-root::after {
   content: '';
   position: fixed;
   top: 0;
@@ -605,8 +705,8 @@ body {
   z-index: 9999;
 }
 
-/* ── CRT vignette ───────────────────────────── */
-.terminal-root::before {
+/* ── CRT vignette (dark mode only) ──────────── */
+.dark .terminal-root::before {
   content: '';
   position: fixed;
   top: 0;
@@ -617,3 +717,7 @@ body {
   pointer-events: none;
   z-index: 9998;
 }
+
+/* ── Light mode: disable CRT effects ────────── */
+.light .terminal-root::after { display: none; }
+.light .terminal-root::before { display: none; }

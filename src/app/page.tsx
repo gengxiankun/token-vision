@@ -75,76 +75,6 @@ type TermLine =
   | { type: 'raw'; text: string }
   | { type: 'html'; html: string };
 
-/* ── Stats line ─────────────────────────────── */
-function StatLine({ label, value, suffix }: { label: string; value: string; suffix?: string }) {
-  return (
-    <div className="terminal-line" style={{ display: 'flex', gap: 16 }}>
-      <span className="term-dim" style={{ minWidth: 140, flexShrink: 0 }}>
-        {label}
-      </span>
-      <span className="term-dots term-dim">:</span>
-      <span className="term-cyan">{value}</span>
-      {suffix && <span className="term-dim" style={{ fontSize: 10 }}>{suffix}</span>}
-    </div>
-  );
-}
-
-/* ── Terminal output renderer ──────────────── */
-function TerminalOutput({ lines }: { lines: TermLine[] }) {
-  return (
-    <div className="terminal-output">
-      {lines.map((line, i) => {
-        if (line.type === 'sep') return <hr key={i} className="term-hr" />;
-        if (line.type === 'raw') return <div key={i} className="term-dim" style={{ whiteSpace: 'pre', lineHeight: 1.4 }}>{line.text}</div>;
-        if (line.type === 'html') return <div key={i} dangerouslySetInnerHTML={{ __html: line.html }} className="terminal-line" />;
-        return (
-          <div key={i} className={`terminal-line term-${line.type}`}>
-            {line.type === 'header' && <span className="term-arrow">▶ </span>}
-            {line.text}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ── Terminal progress bar ──────────────────── */
-function TermProgress({ label, pct, value, color = 'green' }: { label: string; pct: number; value: string; color?: string }) {
-  return (
-    <div className="term-progress-line">
-      <span className="term-dim" style={{ minWidth: 100, flexShrink: 0 }}>{label}</span>
-      <div className="term-pbar-bg">
-        <div className={`term-pbar-fill ${color}`} style={{ width: `${Math.min(pct, 100)}%` }} />
-      </div>
-      <span className="term-fg" style={{ minWidth: 80, textAlign: 'right', fontSize: 11 }}>{value}</span>
-    </div>
-  );
-}
-
-/* ── ASCII table ────────────────────────────── */
-function AsciiTable({
-  headers,
-  rows,
-  widths,
-}: {
-  headers: string[];
-  rows: string[][];
-  widths: number[];
-}) {
-  const hLine = '─'.repeat(widths.reduce((a, b) => a + b + 3, 1));
-  return (
-    <pre className="term-table-pre">
-      {'┌' + '─'.repeat(widths.reduce((a, b) => a + b + 3, 1) - 2) + '┐'}{'\n'}
-      {'│ ' + headers.map((h, i) => h.padEnd(widths[i])).join(' │ ') + ' │'}{'\n'}
-      {'├' + widths.map(w => '─'.repeat(w + 2)).join('┼') + '┤'}{'\n'}
-      {rows.map((row, ri) =>
-        '│ ' + row.map((cell, ci) => cell.padEnd(widths[ci])).join(' │ ') + ' │' + (ri < rows.length - 1 ? '\n' : '')
-      ).join('\n')}{'\n'}
-      {'└' + widths.map(w => '─'.repeat(w + 2)).join('┴') + '┘'}
-    </pre>
-  );
-}
-
 /* ── Main Page ──────────────────────────────── */
 export default function Home() {
   const [data, setData] = useState<Data | null>(null);
@@ -154,6 +84,7 @@ export default function Home() {
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [cmdIdx, setCmdIdx] = useState(-1);
   const [input, setInput] = useState('');
+  const [mode, setMode] = useState<'dark' | 'light'>('dark');
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [bootDots, setBootDots] = useState('');
@@ -162,12 +93,18 @@ export default function Home() {
     setOutputLines(prev => [...prev, ...newLines]);
   }, []);
 
+  /* ── Toggle mode ── */
+  const toggleMode = useCallback(() => {
+    setMode(m => m === 'dark' ? 'light' : 'dark');
+  }, []);
+
   /* ── Boot sequence ── */
   useEffect(() => {
+    const ts = () => '[' + new Date().toLocaleTimeString() + ']';
     const bootMsg1: TermLine[] = [
-      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] initializing TOKEN VISION monitor...' },
-      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] loading kernel modules...' },
-      { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] connecting to data sources...' },
+      { type: 'dim', text: ts() + ' initializing TOKEN VISION monitor...' },
+      { type: 'dim', text: ts() + ' loading kernel modules...' },
+      { type: 'dim', text: ts() + ' connecting to data sources...' },
     ];
     setOutputLines(bootMsg1);
 
@@ -175,7 +112,7 @@ export default function Home() {
       appendLines(
         { type: 'green', text: '[OK] kernel modules loaded' },
         { type: 'green', text: '[OK] feishu sheets interface ready' },
-        { type: 'dim', text: '[' + new Date().toLocaleTimeString() + '] fetching telemetry data...' },
+        { type: 'dim', text: ts() + ' fetching telemetry data...' },
       );
     }, 400);
 
@@ -253,10 +190,10 @@ export default function Home() {
             { type: 'raw', text: '' },
             { type: 'html', html: `<span class="ascii-banner" style="font-size:9px;line-height:1.15;color:var(--c-green)">${[
               '╔══════════════════════════════════════════════╗',
-              '║  ████████  ██  ████████  TOKEN VISION v1.0  ║',
+              '║  ████████  ██  ████████  TOKEN VISION v2.0  ║',
               '║  ██░░░░██  ██  ██░░░░    HERMES AI          ║',
               '║  ████████  ██  ███████   TOKEN CONSUMPTION  ║',
-              '║  ██░░░░░░  ██  ██░░░░    MONITOR v1.0       ║',
+              '║  ██░░░░░░  ██  ██░░░░    MONITOR             ║',
               '║  ██░░░░░░  ██  ████████                      ║',
               '╚══════════════════════════════════════════════╝',
             ].join('\n')}</span>` },
@@ -286,7 +223,6 @@ export default function Home() {
         const top10 = sortedAll.slice(0, 10);
         if (top10.length > 0) {
           appendLines({ type: 'header', text: 'OPERATOR RANKINGS' }, { type: 'sep' });
-          // Tier section header: TOP 10
           appendLines({
             type: 'html', html: `<div class="tier-section"><span class="tier-section-label top">⬥ TOP 10</span><div class="tier-section-line top"></div><span class="tier-count">${top10.length} operators</span></div>`
           });
@@ -317,7 +253,7 @@ export default function Home() {
             );
           });
           rows.push('</div>');
-          appendLines({ type: 'html', html: rows.join('\\n') });
+          appendLines({ type: 'html', html: rows.join('\n') });
         }
 
         // ── MIDDLE TIER ──
@@ -413,7 +349,7 @@ export default function Home() {
           return rows;
         };
 
-        // ═══ TOP 10 ═══
+        // TOP 10
         appendLines(
           { type: 'header', text: '🏆 TOP 10' },
           { type: 'sep' },
@@ -425,7 +361,7 @@ export default function Home() {
           { type: 'raw', text: '' },
         );
 
-        // ═══ MIDDLE ═══
+        // MIDDLE
         const midCount = total - 20;
         if (midCount > 0) {
           appendLines(
@@ -440,7 +376,7 @@ export default function Home() {
           );
         }
 
-        // ═══ BOTTOM 10 ═══
+        // BOTTOM 10
         appendLines(
           { type: 'header', text: '⚠ BOTTOM 10' },
           { type: 'sep' },
@@ -577,7 +513,6 @@ export default function Home() {
           const start = topCost.slice(0, i).reduce((s, r2) => s + (r2.cost / totalCost) * 100, 0);
           return `${chartColors[i % chartColors.length]} ${start}% ${start + pct}%`;
         }).join(', ');
-        // Remaining goes to "others"
         const othersPct = sortedByCost.slice(8).reduce((s, r) => s + (r.cost / totalCost) * 100, 0);
         const finalGradient = gradientStops + (othersPct > 0 ? `, #333 ${100 - othersPct}% 100%` : '');
 
@@ -672,13 +607,12 @@ export default function Home() {
           { type: 'raw', text: '  top [N]    —  Show top N operators by tokens (default 10)' },
           { type: 'raw', text: '  ranking    —  Full ranking table' },
           { type: 'raw', text: '  charts     —  Token distribution & session charts' },
-          { type: 'raw', text: '  search     —  Search for specific user by name' },
           { type: 'raw', text: '  refresh    —  Re-fetch telemetry data from server' },
           { type: 'raw', text: '  help       —  Show this help' },
           { type: 'raw', text: '  clear      —  Clear terminal screen' },
           { type: 'raw', text: '  about      —  About TOKEN VISION' },
           { type: 'sep' },
-          { type: 'dim', text: '  Tip: press ↑/↓ to navigate command history. Tab to autocomplete.' },
+          { type: 'dim', text: '  Tip: press ↑/↓ to navigate command history.' },
           { type: 'raw', text: '' },
         );
         break;
@@ -688,14 +622,15 @@ export default function Home() {
         appendLines(
           { type: 'header', text: 'ABOUT TOKEN VISION' },
           { type: 'sep' },
-          { type: 'raw', text: '  TOKEN VISION v1.0.0' },
+          { type: 'raw', text: '  TOKEN VISION v2.0.0' },
           { type: 'raw', text: '  Hermes AI Cross-Instance Token Consumption Monitor' },
           { type: 'raw', text: '' },
-          { type: 'dim', text: '  Built with: Next.js + Tailwind CSS + TypeScript' },
+          { type: 'dim', text: '  Built with: Next.js + Tailwind CSS v4 + TypeScript' },
           { type: 'dim', text: '  Data source: Feishu Sheets (auto-fetched via GitHub Actions)' },
           { type: 'dim', text: '  Deployment: GitHub Pages (auto-deploy, updated every 15min)' },
           { type: 'raw', text: '' },
           { type: 'raw', text: '  Commands: dashboard | cards | top | ranking | charts | search | refresh | help | clear' },
+          { type: 'raw', text: '  Mode: ☀ Click the sun/moon icon in top-right to toggle day/night' },
           { type: 'raw', text: '' },
         );
         break;
@@ -757,7 +692,7 @@ export default function Home() {
 
   /* ── Render ── */
   return (
-    <div className="terminal-root" onClick={focusInput}>
+    <div className={`terminal-root ${mode}`} onClick={focusInput}>
       {/* Title bar */}
       <div className="term-titlebar">
         <div className="term-titlebar-dots">
@@ -765,13 +700,20 @@ export default function Home() {
           <span className="dot dot-amber" />
           <span className="dot dot-green" />
         </div>
-        <span className="term-titlebar-text">TOKEN VISION — Hermes AI Token Monitor</span>
-        <div style={{ width: 60 }} />
+        <span className="term-titlebar-text">
+          TOKEN VISION v2 — {mode === 'dark' ? 'DARK' : 'LIGHT'} MODE
+        </span>
+        <button
+          className="mode-toggle"
+          onClick={(e) => { e.stopPropagation(); toggleMode(); }}
+          title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          {mode === 'dark' ? '☀' : '☾'}
+        </button>
       </div>
 
       {/* Output */}
       <div className="term-body" ref={scrollRef}>
-        {/* Boot phase output */}
         {outputLines.map((line, i) => {
           if (line.type === 'sep') return <hr key={i} className="term-hr" />;
           if (line.type === 'raw') return <div key={i} className="term-line term-dim" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{line.text}</div>;
@@ -813,7 +755,7 @@ export default function Home() {
 
       {/* Status bar */}
       <div className="term-statusbar">
-        <span className="term-dim">NORMAL</span>
+        <span className="term-dim">{mode === 'dark' ? 'DARK' : 'LIGHT'}</span>
         <span className="term-green">●</span>
         <span className="term-dim">
           {data
