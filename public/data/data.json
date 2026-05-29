@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-05-29T15:09:45.000Z",
+  "updatedAt": "2026-05-29T15:13:11.000Z",
   "dataSource": "daily-optimize-report",
   "stats": {
-    "totalPeople": 52,
-    "totalTokens": 156534724,
-    "totalCost": 46.960417,
+    "totalPeople": 51,
+    "totalTokens": 156632873,
+    "totalCost": 46.989862,
     "totalSessions": 6503,
-    "avgTokensPerPerson": 3010283,
-    "avgCostPerPerson": 0.903085,
-    "avgSessionsPerPerson": 125.1
+    "avgTokensPerPerson": 3071233,
+    "avgCostPerPerson": 0.92137,
+    "avgSessionsPerPerson": 127.5
   },
   "top5": [
     {
@@ -18,7 +18,7 @@
       "cost": 3.210394,
       "sessions": 35,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 2,
@@ -27,7 +27,7 @@
       "cost": 2.906003,
       "sessions": 136,
       "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 3,
@@ -36,7 +36,7 @@
       "cost": 2.754165,
       "sessions": 188,
       "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 4,
@@ -45,7 +45,7 @@
       "cost": 2.462364,
       "sessions": 198,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 5,
@@ -54,7 +54,7 @@
       "cost": 2.290848,
       "sessions": 207,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     }
   ],
   "ranking": [
@@ -65,7 +65,7 @@
       "cost": 3.210394,
       "sessions": 35,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 2,
@@ -74,7 +74,7 @@
       "cost": 2.906003,
       "sessions": 136,
       "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 3,
@@ -83,7 +83,7 @@
       "cost": 2.754165,
       "sessions": 188,
       "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 4,
@@ -92,7 +92,7 @@
       "cost": 2.462364,
       "sessions": 198,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 5,
@@ -101,7 +101,7 @@
       "cost": 2.290848,
       "sessions": 207,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 6,
@@ -110,7 +110,7 @@
       "cost": 2.253243,
       "sessions": 160,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 7,
@@ -119,7 +119,7 @@
       "cost": 1.835113,
       "sessions": 404,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 8,
@@ -128,7 +128,7 @@
       "cost": 1.731394,
       "sessions": 214,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 9,
@@ -137,7 +137,7 @@
       "cost": 1.496949,
       "sessions": 200,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 10,
@@ -146,7 +146,7 @@
       "cost": 1.20429,
       "sessions": 170,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 11,
@@ -155,7 +155,7 @@
       "cost": 1.16111,
       "sessions": 224,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 12,
@@ -164,7 +164,7 @@
       "cost": 1.131256,
       "sessions": 201,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 13,
@@ -173,7 +173,7 @@
       "cost": 1.107297,
       "sessions": 180,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 14,
@@ -182,7 +182,7 @@
       "cost": 1.084711,
       "sessions": 185,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 15,
@@ -191,7 +191,7 @@
       "cost": 1.02795,
       "sessions": 123,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 16,
@@ -200,7 +200,7 @@
       "cost": 1.01749,
       "sessions": 69,
       "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 17,
@@ -209,7 +209,7 @@
       "cost": 0.978603,
       "sessions": 200,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 18,
@@ -218,7 +218,7 @@
       "cost": 0.945886,
       "sessions": 196,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 19,
@@ -227,7 +227,7 @@
       "cost": 0.926879,
       "sessions": 189,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 20,
@@ -236,7 +236,7 @@
       "cost": 0.909025,
       "sessions": 114,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 21,
@@ -245,7 +245,7 @@
       "cost": 0.90591,
       "sessions": 100,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 22,
@@ -254,7 +254,7 @@
       "cost": 0.869925,
       "sessions": 79,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 23,
@@ -263,7 +263,7 @@
       "cost": 0.845103,
       "sessions": 188,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 24,
@@ -272,7 +272,7 @@
       "cost": 0.841783,
       "sessions": 170,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 25,
@@ -281,7 +281,7 @@
       "cost": 0.825419,
       "sessions": 50,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 26,
@@ -290,7 +290,7 @@
       "cost": 0.745051,
       "sessions": 142,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 27,
@@ -299,7 +299,7 @@
       "cost": 0.741136,
       "sessions": 141,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 28,
@@ -308,7 +308,7 @@
       "cost": 0.740635,
       "sessions": 183,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 29,
@@ -317,7 +317,7 @@
       "cost": 0.701903,
       "sessions": 107,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 30,
@@ -326,7 +326,7 @@
       "cost": 0.60998,
       "sessions": 193,
       "sources": 2,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 31,
@@ -335,7 +335,7 @@
       "cost": 0.601152,
       "sessions": 133,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 32,
@@ -344,88 +344,88 @@
       "cost": 0.594216,
       "sessions": 123,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 33,
+      "name": "Begger",
+      "totalTokens": 1878796,
+      "cost": 0.563639,
+      "sessions": 65,
+      "sources": 3,
+      "updatedAt": "2026-05-29T15:13:11.000Z"
+    },
+    {
+      "rank": 34,
       "name": "Laura",
       "totalTokens": 1796588,
       "cost": 0.538976,
       "sessions": 29,
       "sources": 2,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 34,
+      "rank": 35,
       "name": "Zero",
       "totalTokens": 1713326,
       "cost": 0.513998,
       "sessions": 216,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 35,
+      "rank": 36,
       "name": "apple",
       "totalTokens": 1667848,
       "cost": 0.500354,
       "sessions": 28,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 36,
+      "rank": 37,
       "name": "Carry",
       "totalTokens": 1611806,
       "cost": 0.483542,
       "sessions": 91,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 37,
+      "rank": 38,
       "name": "Nini",
       "totalTokens": 1559620,
       "cost": 0.467886,
       "sessions": 47,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 38,
+      "rank": 39,
       "name": "Lemon",
       "totalTokens": 1493080,
       "cost": 0.447924,
       "sessions": 150,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 39,
+      "rank": 40,
       "name": "Zane",
       "totalTokens": 1462440,
       "cost": 0.438732,
       "sessions": 32,
       "sources": 2,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 40,
+      "rank": 41,
       "name": "Haha",
       "totalTokens": 1368511,
       "cost": 0.410553,
       "sessions": 182,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
-    },
-    {
-      "rank": 41,
-      "name": "Begger",
-      "totalTokens": 1302946,
-      "cost": 0.390884,
-      "sessions": 43,
-      "sources": 3,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 42,
@@ -434,7 +434,7 @@
       "cost": 0.277868,
       "sessions": 17,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 43,
@@ -443,25 +443,25 @@
       "cost": 0.269365,
       "sessions": 248,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 44,
-      "name": "疯子改变世界 Crazy Guy Change The World",
-      "totalTokens": 575850,
-      "cost": 0.172755,
-      "sessions": 22,
-      "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
-    },
-    {
-      "rank": 45,
       "name": "Thor",
       "totalTokens": 441950,
       "cost": 0.132585,
       "sessions": 160,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
+    },
+    {
+      "rank": 45,
+      "name": "Elian",
+      "totalTokens": 373794,
+      "cost": 0.112138,
+      "sessions": 1,
+      "sources": 1,
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 46,
@@ -470,61 +470,52 @@
       "cost": 0.099422,
       "sessions": 14,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 47,
-      "name": "Elian",
-      "totalTokens": 328363,
-      "cost": 0.098509,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
-    },
-    {
-      "rank": 48,
       "name": "卧龙先生 Master.Wolong",
       "totalTokens": 324590,
       "cost": 0.097377,
       "sessions": 14,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 49,
+      "rank": 48,
       "name": "Erin",
       "totalTokens": 222872,
       "cost": 0.066862,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
+    },
+    {
+      "rank": 49,
+      "name": "Daneil",
+      "totalTokens": 213356,
+      "cost": 0.064007,
+      "sessions": 1,
+      "sources": 1,
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
       "rank": 50,
-      "name": "Daneil",
-      "totalTokens": 160638,
-      "cost": 0.048191,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
-    },
-    {
-      "rank": 51,
       "name": "Sager",
       "totalTokens": 106590,
       "cost": 0.031977,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     },
     {
-      "rank": 52,
+      "rank": 51,
       "name": "Director Ding",
       "totalTokens": 51573,
       "cost": 0.015472,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T15:09:45.000Z"
+      "updatedAt": "2026-05-29T15:13:11.000Z"
     }
   ]
 }
