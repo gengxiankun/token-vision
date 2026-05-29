@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-29T16:34:44.000Z",
+  "updatedAt": "2026-05-29T16:36:21.000Z",
   "dataSource": "daily-optimize-report",
   "stats": {
     "totalPeople": 55,
@@ -18,7 +18,7 @@
       "cost": 0.733377,
       "sessions": 90,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 2,
@@ -27,7 +27,7 @@
       "cost": 0.732796,
       "sessions": 93,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 3,
@@ -36,7 +36,7 @@
       "cost": 0.418472,
       "sessions": 33,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 4,
@@ -45,7 +45,7 @@
       "cost": 0.38206,
       "sessions": 62,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 5,
@@ -54,7 +54,7 @@
       "cost": 0.324013,
       "sessions": 40,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     }
   ],
   "ranking": [
@@ -65,7 +65,7 @@
       "cost": 0.733377,
       "sessions": 90,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 2,
@@ -74,7 +74,7 @@
       "cost": 0.732796,
       "sessions": 93,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 3,
@@ -83,7 +83,7 @@
       "cost": 0.418472,
       "sessions": 33,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 4,
@@ -92,7 +92,7 @@
       "cost": 0.38206,
       "sessions": 62,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 5,
@@ -101,7 +101,7 @@
       "cost": 0.324013,
       "sessions": 40,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 6,
@@ -110,7 +110,7 @@
       "cost": 0.317006,
       "sessions": 50,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 7,
@@ -119,7 +119,7 @@
       "cost": 0.304641,
       "sessions": 23,
       "sources": 3,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 8,
@@ -128,7 +128,7 @@
       "cost": 0.292237,
       "sessions": 49,
       "sources": 3,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 9,
@@ -137,7 +137,7 @@
       "cost": 0.279183,
       "sessions": 29,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 10,
@@ -146,7 +146,7 @@
       "cost": 0.276036,
       "sessions": 24,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 11,
@@ -155,7 +155,7 @@
       "cost": 0.274792,
       "sessions": 18,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 12,
@@ -164,7 +164,7 @@
       "cost": 0.245225,
       "sessions": 43,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 13,
@@ -173,7 +173,7 @@
       "cost": 0.230688,
       "sessions": 35,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 14,
@@ -182,7 +182,7 @@
       "cost": 0.227128,
       "sessions": 16,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 15,
@@ -191,7 +191,7 @@
       "cost": 0.217522,
       "sessions": 46,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 16,
@@ -200,7 +200,7 @@
       "cost": 0.195718,
       "sessions": 21,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 17,
@@ -209,7 +209,7 @@
       "cost": 0.173575,
       "sessions": 32,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 18,
@@ -218,7 +218,7 @@
       "cost": 0.172179,
       "sessions": 23,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 19,
@@ -227,7 +227,7 @@
       "cost": 0.152295,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 20,
@@ -236,7 +236,7 @@
       "cost": 0.150249,
       "sessions": 27,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 21,
@@ -245,7 +245,7 @@
       "cost": 0.139225,
       "sessions": 18,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 22,
@@ -254,7 +254,7 @@
       "cost": 0.135127,
       "sessions": 28,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 23,
@@ -263,7 +263,7 @@
       "cost": 0.132411,
       "sessions": 27,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 24,
@@ -272,7 +272,7 @@
       "cost": 0.126666,
       "sessions": 17,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 25,
@@ -281,7 +281,7 @@
       "cost": 0.123725,
       "sessions": 23,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 26,
@@ -290,7 +290,7 @@
       "cost": 0.112666,
       "sessions": 8,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 27,
@@ -299,7 +299,7 @@
       "cost": 0.111751,
       "sessions": 23,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 28,
@@ -308,7 +308,7 @@
       "cost": 0.109664,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 29,
@@ -317,7 +317,7 @@
       "cost": 0.104414,
       "sessions": 7,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 30,
@@ -326,7 +326,7 @@
       "cost": 0.101121,
       "sessions": 7,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 31,
@@ -335,7 +335,7 @@
       "cost": 0.099078,
       "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 32,
@@ -344,7 +344,7 @@
       "cost": 0.09786,
       "sessions": 20,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 33,
@@ -353,7 +353,7 @@
       "cost": 0.096829,
       "sessions": 10,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 34,
@@ -362,7 +362,7 @@
       "cost": 0.089359,
       "sessions": 24,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 35,
@@ -371,7 +371,7 @@
       "cost": 0.086847,
       "sessions": 17,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 36,
@@ -380,7 +380,7 @@
       "cost": 0.080637,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 37,
@@ -389,7 +389,7 @@
       "cost": 0.079475,
       "sessions": 11,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 38,
@@ -398,7 +398,7 @@
       "cost": 0.075899,
       "sessions": 14,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 39,
@@ -407,7 +407,7 @@
       "cost": 0.074247,
       "sessions": 6,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 40,
@@ -416,7 +416,7 @@
       "cost": 0.07251,
       "sessions": 14,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 41,
@@ -425,7 +425,7 @@
       "cost": 0.071235,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 42,
@@ -434,7 +434,7 @@
       "cost": 0.05005,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 43,
@@ -443,7 +443,7 @@
       "cost": 0.049507,
       "sessions": 4,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 44,
@@ -452,7 +452,7 @@
       "cost": 0.044792,
       "sessions": 15,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 45,
@@ -461,7 +461,7 @@
       "cost": 0.044787,
       "sessions": 31,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 46,
@@ -470,7 +470,7 @@
       "cost": 0.035886,
       "sessions": 17,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 47,
@@ -479,7 +479,7 @@
       "cost": 0.03574,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 48,
@@ -488,7 +488,7 @@
       "cost": 0.034922,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 49,
@@ -497,7 +497,7 @@
       "cost": 0.017961,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 50,
@@ -506,7 +506,7 @@
       "cost": 0.016221,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 51,
@@ -515,7 +515,7 @@
       "cost": 0.015705,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 52,
@@ -524,7 +524,7 @@
       "cost": 0.015022,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 53,
@@ -533,7 +533,7 @@
       "cost": 0.014066,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 54,
@@ -542,7 +542,7 @@
       "cost": 0.007374,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     },
     {
       "rank": 55,
@@ -551,7 +551,7 @@
       "cost": 0.007102,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:34:44.000Z"
+      "updatedAt": "2026-05-29T16:36:21.000Z"
     }
   ]
 }
