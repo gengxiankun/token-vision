@@ -1,11 +1,9 @@
-name: Update Data & Deploy
+name: Deploy to GitHub Pages
 
 on:
-  schedule:
-    # Run every 15 minutes
-    - cron: '*/15 * * * *'
+  push:
+    branches: [main]
   workflow_dispatch:
-    # Allow manual trigger
 
 permissions:
   contents: write
@@ -36,12 +34,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Fetch Feishu data
-        env:
-          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
-          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-        run: node scripts/fetch-data.js
 
       - name: Build
         run: pnpm run build
