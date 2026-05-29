@@ -1,557 +1,530 @@
 {
-  "updatedAt": "2026-05-29T16:39:55.000Z",
+  "updatedAt": "2026-05-29T16:42:08.000Z",
   "dataSource": "daily-optimize-report",
   "stats": {
-    "totalPeople": 55,
-    "totalTokens": 28704801,
-    "totalCost": 8.61144,
-    "totalSessions": 1120,
-    "avgTokensPerPerson": 521905,
-    "avgCostPerPerson": 0.156572,
-    "avgSessionsPerPerson": 20.4
+    "totalPeople": 52,
+    "totalTokens": 36225408,
+    "totalCost": 10.867622,
+    "totalSessions": 808,
+    "avgTokensPerPerson": 696642,
+    "avgCostPerPerson": 0.208993,
+    "avgSessionsPerPerson": 15.5
   },
   "top5": [
     {
       "rank": 1,
-      "name": "Selina",
-      "totalTokens": 2444591,
-      "cost": 0.733377,
-      "sessions": 90,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Laura",
+      "totalTokens": 7869931,
+      "cost": 2.360979,
+      "sessions": 154,
+      "sources": 18,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 2,
-      "name": "Laura",
-      "totalTokens": 2442654,
-      "cost": 0.732796,
-      "sessions": 93,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "卧龙先生 Master.Wolong",
+      "totalTokens": 2725699,
+      "cost": 0.81771,
+      "sessions": 104,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 3,
-      "name": "Chacha",
-      "totalTokens": 1394906,
-      "cost": 0.418472,
-      "sessions": 33,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Garmin",
+      "totalTokens": 1785228,
+      "cost": 0.535568,
+      "sessions": 44,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 4,
-      "name": "Sony",
-      "totalTokens": 1273535,
-      "cost": 0.38206,
-      "sessions": 62,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Chelsa",
+      "totalTokens": 1664970,
+      "cost": 0.499491,
+      "sessions": 28,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 5,
-      "name": "Quentin",
-      "totalTokens": 1080042,
-      "cost": 0.324013,
-      "sessions": 40,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "CW",
+      "totalTokens": 1384326,
+      "cost": 0.415298,
+      "sessions": 39,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     }
   ],
   "ranking": [
     {
       "rank": 1,
-      "name": "Selina",
-      "totalTokens": 2444591,
-      "cost": 0.733377,
-      "sessions": 90,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Laura",
+      "totalTokens": 7869931,
+      "cost": 2.360979,
+      "sessions": 154,
+      "sources": 18,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 2,
-      "name": "Laura",
-      "totalTokens": 2442654,
-      "cost": 0.732796,
-      "sessions": 93,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "卧龙先生 Master.Wolong",
+      "totalTokens": 2725699,
+      "cost": 0.81771,
+      "sessions": 104,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 3,
-      "name": "Chacha",
-      "totalTokens": 1394906,
-      "cost": 0.418472,
-      "sessions": 33,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Garmin",
+      "totalTokens": 1785228,
+      "cost": 0.535568,
+      "sessions": 44,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 4,
-      "name": "Sony",
-      "totalTokens": 1273535,
-      "cost": 0.38206,
-      "sessions": 62,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Chelsa",
+      "totalTokens": 1664970,
+      "cost": 0.499491,
+      "sessions": 28,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 5,
-      "name": "Quentin",
-      "totalTokens": 1080042,
-      "cost": 0.324013,
-      "sessions": 40,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "CW",
+      "totalTokens": 1384326,
+      "cost": 0.415298,
+      "sessions": 39,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 6,
-      "name": "Garmin",
-      "totalTokens": 1056687,
-      "cost": 0.317006,
-      "sessions": 50,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Elias Voss",
+      "totalTokens": 1215997,
+      "cost": 0.364799,
+      "sessions": 22,
+      "sources": 8,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 7,
-      "name": "49276",
-      "totalTokens": 1015470,
-      "cost": 0.304641,
-      "sessions": 23,
-      "sources": 3,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Begger",
+      "totalTokens": 1179698,
+      "cost": 0.353909,
+      "sessions": 34,
+      "sources": 13,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 8,
-      "name": "Fane",
-      "totalTokens": 974124,
-      "cost": 0.292237,
-      "sessions": 49,
+      "name": "Chacha",
+      "totalTokens": 1172459,
+      "cost": 0.351738,
+      "sessions": 24,
       "sources": 3,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 9,
-      "name": "Begger",
-      "totalTokens": 930610,
-      "cost": 0.279183,
-      "sessions": 29,
-      "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "49276",
+      "totalTokens": 1120775,
+      "cost": 0.336232,
+      "sessions": 22,
+      "sources": 6,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 10,
-      "name": "Kevin",
-      "totalTokens": 920119,
-      "cost": 0.276036,
-      "sessions": 24,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Arlo",
+      "totalTokens": 992323,
+      "cost": 0.297697,
+      "sessions": 35,
+      "sources": 20,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 11,
-      "name": "CW",
-      "totalTokens": 915972,
-      "cost": 0.274792,
+      "name": "Sony",
+      "totalTokens": 792706,
+      "cost": 0.237812,
       "sessions": 18,
-      "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 12,
-      "name": "Jack",
-      "totalTokens": 817417,
-      "cost": 0.245225,
-      "sessions": 43,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Yeti",
+      "totalTokens": 758684,
+      "cost": 0.227605,
+      "sessions": 14,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 13,
-      "name": "Seven",
-      "totalTokens": 768959,
-      "cost": 0.230688,
-      "sessions": 35,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Kevin",
+      "totalTokens": 741311,
+      "cost": 0.222393,
+      "sessions": 17,
+      "sources": 4,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 14,
-      "name": "Tom",
-      "totalTokens": 757092,
-      "cost": 0.227128,
-      "sessions": 16,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Quentin",
+      "totalTokens": 624219,
+      "cost": 0.187266,
+      "sessions": 17,
+      "sources": 11,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 15,
-      "name": "Eric Yang",
-      "totalTokens": 725072,
-      "cost": 0.217522,
-      "sessions": 46,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Karl",
+      "totalTokens": 617154,
+      "cost": 0.185146,
+      "sessions": 6,
+      "sources": 6,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 16,
-      "name": "Stuart",
-      "totalTokens": 652392,
-      "cost": 0.195718,
-      "sessions": 21,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Alex",
+      "totalTokens": 600243,
+      "cost": 0.180073,
+      "sessions": 11,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 17,
-      "name": "Kaveh",
-      "totalTokens": 578585,
-      "cost": 0.173575,
-      "sessions": 32,
+      "name": "Tom",
+      "totalTokens": 567103,
+      "cost": 0.170131,
+      "sessions": 10,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 18,
-      "name": "Ling",
-      "totalTokens": 573929,
-      "cost": 0.172179,
-      "sessions": 23,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Fane",
+      "totalTokens": 556301,
+      "cost": 0.16689,
+      "sessions": 17,
+      "sources": 5,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 19,
-      "name": "Elian",
-      "totalTokens": 507651,
-      "cost": 0.152295,
-      "sessions": 1,
+      "name": "Jack",
+      "totalTokens": 526170,
+      "cost": 0.157851,
+      "sessions": 9,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 20,
-      "name": "Haha",
-      "totalTokens": 500830,
-      "cost": 0.150249,
-      "sessions": 27,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "apple",
+      "totalTokens": 479482,
+      "cost": 0.143845,
+      "sessions": 5,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 21,
-      "name": "Colin",
-      "totalTokens": 464084,
-      "cost": 0.139225,
-      "sessions": 18,
+      "name": "Stuart",
+      "totalTokens": 470826,
+      "cost": 0.141248,
+      "sessions": 10,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 22,
-      "name": "Jason",
-      "totalTokens": 450422,
-      "cost": 0.135127,
-      "sessions": 28,
+      "name": "Seven",
+      "totalTokens": 465300,
+      "cost": 0.13959,
+      "sessions": 13,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 23,
-      "name": "Alex",
-      "totalTokens": 441371,
-      "cost": 0.132411,
-      "sessions": 27,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Ling",
+      "totalTokens": 463061,
+      "cost": 0.138918,
+      "sessions": 6,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 24,
-      "name": "Fowles",
-      "totalTokens": 422219,
-      "cost": 0.126666,
-      "sessions": 17,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Carry",
+      "totalTokens": 450000,
+      "cost": 0.135,
+      "sessions": 12,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 25,
-      "name": "Yeti",
-      "totalTokens": 412417,
-      "cost": 0.123725,
-      "sessions": 23,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Eric Yang",
+      "totalTokens": 395722,
+      "cost": 0.118717,
+      "sessions": 5,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 26,
-      "name": "Arlo",
-      "totalTokens": 375553,
-      "cost": 0.112666,
-      "sessions": 8,
-      "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Jiang",
+      "totalTokens": 393613,
+      "cost": 0.118084,
+      "sessions": 4,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 27,
-      "name": "Zero",
-      "totalTokens": 372504,
-      "cost": 0.111751,
-      "sessions": 23,
+      "name": "Kaveh",
+      "totalTokens": 380486,
+      "cost": 0.114146,
+      "sessions": 7,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 28,
-      "name": "Afeez",
-      "totalTokens": 365548,
-      "cost": 0.109664,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Milly",
+      "totalTokens": 375474,
+      "cost": 0.112642,
+      "sessions": 9,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 29,
-      "name": "Milly",
-      "totalTokens": 348047,
-      "cost": 0.104414,
-      "sessions": 7,
-      "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Haha",
+      "totalTokens": 367269,
+      "cost": 0.110181,
+      "sessions": 5,
+      "sources": 1,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 30,
-      "name": "Chris Yang",
-      "totalTokens": 337069,
-      "cost": 0.101121,
-      "sessions": 7,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Colin",
+      "totalTokens": 345222,
+      "cost": 0.103567,
+      "sessions": 8,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 31,
-      "name": "Zane",
-      "totalTokens": 330259,
-      "cost": 0.099078,
+      "name": "Lemon",
+      "totalTokens": 337674,
+      "cost": 0.101302,
       "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 32,
-      "name": "Memory",
-      "totalTokens": 326201,
-      "cost": 0.09786,
-      "sessions": 20,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 33,
       "name": "Gary",
       "totalTokens": 322764,
       "cost": 0.096829,
       "sessions": 10,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
+    },
+    {
+      "rank": 33,
+      "name": "Elian",
+      "totalTokens": 318762,
+      "cost": 0.095629,
+      "sessions": 3,
+      "sources": 1,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 34,
-      "name": "Dick",
-      "totalTokens": 297863,
-      "cost": 0.089359,
-      "sessions": 24,
+      "name": "Jason",
+      "totalTokens": 302860,
+      "cost": 0.090858,
+      "sessions": 4,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 35,
-      "name": "Jiang",
-      "totalTokens": 289490,
-      "cost": 0.086847,
-      "sessions": 17,
+      "name": "Memory",
+      "totalTokens": 285714,
+      "cost": 0.085714,
+      "sessions": 6,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 36,
       "name": "Daneil",
-      "totalTokens": 276685,
-      "cost": 0.083005,
+      "totalTokens": 284815,
+      "cost": 0.085444,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 37,
-      "name": "Carry",
-      "totalTokens": 264918,
-      "cost": 0.079475,
-      "sessions": 11,
+      "name": "Chris Yang",
+      "totalTokens": 279120,
+      "cost": 0.083736,
+      "sessions": 5,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 38,
-      "name": "Leon",
-      "totalTokens": 252998,
-      "cost": 0.075899,
-      "sessions": 14,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Afeez",
+      "totalTokens": 277928,
+      "cost": 0.083378,
+      "sessions": 2,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 39,
-      "name": "Nini",
-      "totalTokens": 247490,
-      "cost": 0.074247,
-      "sessions": 6,
+      "name": "Zero",
+      "totalTokens": 269967,
+      "cost": 0.08099,
+      "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 40,
-      "name": "Elias Voss",
-      "totalTokens": 241699,
-      "cost": 0.07251,
-      "sessions": 14,
+      "name": "Sager",
+      "totalTokens": 250000,
+      "cost": 0.075,
+      "sessions": 8,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 41,
+      "name": "Fowles",
+      "totalTokens": 245930,
+      "cost": 0.073779,
+      "sessions": 7,
+      "sources": 1,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
+    },
+    {
+      "rank": 42,
       "name": "Erin",
       "totalTokens": 237450,
       "cost": 0.071235,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 42,
-      "name": "Karl",
-      "totalTokens": 166832,
-      "cost": 0.05005,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 43,
-      "name": "Sager",
-      "totalTokens": 165024,
-      "cost": 0.049507,
-      "sessions": 4,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Lisa Liu",
+      "totalTokens": 197238,
+      "cost": 0.059171,
+      "sessions": 6,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 44,
-      "name": "Lemon",
-      "totalTokens": 149308,
-      "cost": 0.044792,
-      "sessions": 15,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Zane",
+      "totalTokens": 187482,
+      "cost": 0.056245,
+      "sessions": 3,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 45,
-      "name": "Lisa Liu",
-      "totalTokens": 149289,
-      "cost": 0.044787,
-      "sessions": 31,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Leon",
+      "totalTokens": 165601,
+      "cost": 0.04968,
+      "sessions": 5,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 46,
       "name": "Thor",
-      "totalTokens": 119621,
-      "cost": 0.035886,
-      "sessions": 17,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "totalTokens": 160967,
+      "cost": 0.04829,
+      "sessions": 6,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 47,
-      "name": "apple",
-      "totalTokens": 119132,
-      "cost": 0.03574,
-      "sessions": 2,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Dick",
+      "totalTokens": 143057,
+      "cost": 0.042917,
+      "sessions": 4,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 48,
-      "name": "卧龙先生 Master.Wolong",
-      "totalTokens": 116407,
-      "cost": 0.034922,
-      "sessions": 3,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Nini",
+      "totalTokens": 134799,
+      "cost": 0.04044,
+      "sessions": 4,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 49,
-      "name": "Hooyking",
-      "totalTokens": 59870,
-      "cost": 0.017961,
-      "sessions": 2,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "name": "Selina",
+      "totalTokens": 124110,
+      "cost": 0.037233,
+      "sessions": 6,
+      "sources": 2,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     },
     {
       "rank": 50,
+      "name": "North Geogie",
+      "totalTokens": 92308,
+      "cost": 0.027692,
+      "sessions": 4,
+      "sources": 3,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
+    },
+    {
+      "rank": 51,
+      "name": "Hooyking",
+      "totalTokens": 71041,
+      "cost": 0.021312,
+      "sessions": 2,
+      "sources": 1,
+      "updatedAt": "2026-05-29T16:42:08.000Z"
+    },
+    {
+      "rank": 52,
       "name": "Director Ding",
       "totalTokens": 54069,
       "cost": 0.016221,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 51,
-      "name": "疯子改变世界 Crazy Guy Change The World",
-      "totalTokens": 52350,
-      "cost": 0.015705,
-      "sessions": 2,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 52,
-      "name": "Chelsa",
-      "totalTokens": 50072,
-      "cost": 0.015022,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 53,
-      "name": "Grady",
-      "totalTokens": 46888,
-      "cost": 0.014066,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 54,
-      "name": "Dylan",
-      "totalTokens": 24579,
-      "cost": 0.007374,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
-    },
-    {
-      "rank": 55,
-      "name": "North Geogie",
-      "totalTokens": 23672,
-      "cost": 0.007102,
-      "sessions": 1,
-      "sources": 1,
-      "updatedAt": "2026-05-29T16:39:55.000Z"
+      "updatedAt": "2026-05-29T16:42:08.000Z"
     }
   ]
 }
