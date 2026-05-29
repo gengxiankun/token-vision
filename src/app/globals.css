@@ -184,6 +184,58 @@ body {
   color: var(--c-fg);
 }
 
+/* ── Time Range Selector ────────────────────── */
+.term-range-selector {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.term-range-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--c-dim);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.term-range-btn:hover {
+  color: var(--c-fg);
+  background: var(--c-mode-bg);
+  border-color: var(--c-mode-border);
+}
+
+.term-range-btn.active {
+  color: var(--c-green);
+  border-color: var(--c-green);
+  background: rgba(51, 255, 51, 0.08);
+}
+
+.light .term-range-btn.active {
+  color: var(--c-green);
+  border-color: var(--c-green);
+  background: rgba(26, 122, 26, 0.08);
+}
+
+.term-titlebar-range {
+  color: var(--c-green);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+}
+
 /* ── Terminal Body (output area) ────────────── */
 .term-body {
   flex: 1;

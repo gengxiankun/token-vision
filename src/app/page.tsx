@@ -42,6 +42,8 @@ interface Stats {
 
 interface Data {
   updatedAt: string;
+  dataSource?: string;
+  timeRange?: string;
   stats: Stats;
   top5: RankingItem[];
   ranking: RankingItem[];
@@ -89,6 +91,21 @@ export default function Home() {
   const [cmdIdx, setCmdIdx] = useState(-1);
   const [input, setInput] = useState('');
   const [starMode, setStarMode] = useState(false);
+  /* ── Time range: today | 7d | 30d | 3m ── */
+  const [timeRange, setTimeRange] = useState<'today' | '7d' | '30d' | '3m'>('today');
+  const [timeRangeLabel, setTimeRangeLabel] = useState('Today');
+  const rangeFileMap: Record<string, string> = {
+    today: './data/data.json',
+    '7d': './data/data-7d.json',
+    '30d': './data/data-30d.json',
+    '3m': './data/data-90d.json',
+  };
+  const rangeLabels: Record<string, string> = {
+    today: 'Today',
+    '7d': '7d',
+    '30d': '30d',
+    '3m': '3m',
+  };
   /* ── Theme: system default + localStorage persistence ── */
   const getInitialMode = (): 'dark' | 'light' => {
     if (typeof window !== 'undefined') {
@@ -109,6 +126,18 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [bootDots, setBootDots] = useState('');
+
+  /* ── Fetch data by time range ── */
+  const fetchDataByRange = useCallback((range: string) => {
+    const url = rangeFileMap[range] || rangeFileMap.today;
+    return fetch(url)
+      .then(r => r.json())
+      .then((d: Data) => {
+        setData(d);
+        setTimeRangeLabel(rangeLabels[range] || 'Today');
+        return d;
+      });
+  }, []);
 
   const appendLines = useCallback((...newLines: TermLine[]) => {
     setOutputLines(prev => [...prev, ...newLines]);
@@ -138,7 +167,7 @@ export default function Home() {
     }, 400);
 
     const t2 = setTimeout(() => {
-      fetch('./data/data.json')
+      fetch(rangeFileMap.today)
         .then(r => r.json())
         .then((d: Data) => {
           setData(d);
@@ -590,9 +619,9 @@ export default function Home() {
       case 'refresh': {
         const now = new Date();
         appendLines(
-          { type: 'amber', text: '[REFRESH] re-fetching telemetry data...' },
+          { type: 'amber', text: `[REFRESH] re-fetching ${timeRangeLabel} data...` },
         );
-        fetch('./data/data.json')
+        fetch(rangeFileMap[timeRange])
           .then(r => r.json())
           .then((d: Data) => {
             setData(d);
@@ -707,7 +736,7 @@ export default function Home() {
           { type: 'raw', text: '  clear      —  Clear terminal screen' },
           { type: 'raw', text: '  about      —  About TOKEN VISION' },
           { type: 'sep' },
-          { type: 'dim', text: '  Tip: press ↑/↓ to navigate command history.' },
+          { type: 'dim', text: '  Tip: press ↑/↓ to navigate command history. Use title bar buttons to switch time range (Today / 7d / 30d / 3m).' },
           { type: 'raw', text: '' },
         );
         break;
@@ -797,7 +826,35 @@ export default function Home() {
         </div>
         <span className="term-titlebar-text">
           TOKEN VISION v2 — {mode === 'dark' ? 'DARK' : 'LIGHT'} MODE
+          <span className="term-titlebar-range"> | {timeRangeLabel}</span>
         </span>
+        <div className="term-range-selector">
+          {(['today', '7d', '30d', '3m'] as const).map(r => (
+            <button
+              key={r}
+              className={`term-range-btn ${timeRange === r ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (r === timeRange) return;
+                setTimeRange(r);
+                setTimeRangeLabel(rangeLabels[r]);
+                appendLines(
+                  { type: 'dim', text: `[RANGE] switching to ${rangeLabels[r]}...` },
+                );
+                fetchDataByRange(r).then(() => {
+                  setOutputLines([]);
+                  execCommand('dashboard');
+                }).catch(() => {
+                  appendLines(
+                    { type: 'red', text: `[ERR] failed to load ${rangeLabels[r]} data` },
+                  );
+                });
+              }}
+            >
+              {rangeLabels[r]}
+            </button>
+          ))}
+        </div>
         <button
           className="mode-toggle"
           onClick={(e) => { e.stopPropagation(); toggleMode(); }}
@@ -868,7 +925,7 @@ export default function Home() {
         <span className="term-green">●</span>
         <span className="term-dim">
           {data
-            ? `${data.stats.totalPeople} nodes · ${fmt(data.stats.totalTokens)} tokens · updated ${fmtDate(data.updatedAt)}`
+            ? `${timeRangeLabel} · ${data.stats.totalPeople} nodes · ${fmt(data.stats.totalTokens)} tokens · updated ${fmtDate(data.updatedAt)}`
             : 'initializing...'}
         </span>
         {bootPhase === 'ready' && <span className="cursor-blink-sm" />}

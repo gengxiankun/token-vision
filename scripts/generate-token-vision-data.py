@@ -5,6 +5,9 @@ Generate token-vision data.json using daily-optimize-report.py's SSH collection 
 This replaces the old fetch-data.js (Feishu API) approach.
 Runs the same optimized collection as daily-optimize-report.py,
 but outputs token-vision's data.json format.
+
+Also archives daily snapshots and computes rolling aggregates
+for 7-day, 30-day, and 3-month time ranges.
 """
 import subprocess, os, re, json, sys, tempfile, shutil
 from collections import defaultdict
@@ -303,6 +306,144 @@ def main():
     print(f"\n📊 TOP 10:", file=sys.stderr)
     for r in data["ranking"][:10]:
         print(f"   #{r['rank']:2d} {r['name']:20s} {r['totalTokens']:>10,} Token  {r['sessions']:4d}会话  {r['sources']}台", file=sys.stderr)
+
+    # ── Archive today's snapshot ──
+    archive_dir = os.path.join(token_vision_dir, "archive")
+    os.makedirs(archive_dir, exist_ok=True)
+    today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+    archive_path = os.path.join(archive_dir, f"{today}.json")
+    # Only archive if there's new data (not a re-run)
+    if ranked:
+        with open(archive_path, "w") as f:
+            json.dump(data, f, ensure_ascii=False)
+        print(f"📦 已归档: {archive_path}", file=sys.stderr)
+
+    # ── Generate rolling aggregates ──
+    generate_aggregates(token_vision_dir)
+
+
+def generate_aggregates(data_dir):
+    """Read archived snapshots and produce 7-day, 30-day, 3-month aggregate files."""
+    archive_dir = os.path.join(data_dir, "archive")
+    if not os.path.isdir(archive_dir):
+        print("⚠️ 无归档目录，跳过聚合生成", file=sys.stderr)
+        return
+
+    import math
+
+    # Collect all archived snapshots by date
+    archives = {}
+    for fname in sorted(os.listdir(archive_dir)):
+        if not fname.endswith(".json"):
+            continue
+        date_str = fname.replace(".json", "")
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")  # validate date
+            with open(os.path.join(archive_dir, fname)) as f:
+                archives[date_str] = json.load(f)
+        except (ValueError, json.JSONDecodeError):
+            continue
+
+    if not archives:
+        print("⚠️ 归档为空，跳过聚合生成", file=sys.stderr)
+        return
+
+    sorted_dates = sorted(archives.keys())
+    now = datetime.now(timezone(timedelta(hours=8)))
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    ranges = [
+        ("data-7d.json", 7),
+        ("data-30d.json", 30),
+        ("data-90d.json", 90),  # ≈ 3 months
+    ]
+
+    for out_name, days in ranges:
+        cutoff = (now - timedelta(days=days)).strftime("%Y-%m-%d")
+        relevant_dates = [d for d in sorted_dates if d >= cutoff]
+        if not relevant_dates:
+            continue
+
+        # Aggregate person data across all relevant snapshots
+        person_agg = {}  # name -> {tokens, sessions, machines_set}
+        total_people = set()
+        total_tokens = 0
+        total_sessions = 0
+
+        for date_str in relevant_dates:
+            snap = archives[date_str]
+            for item in snap.get("ranking", []):
+                name = item["name"]
+                total_people.add(name)
+                if name not in person_agg:
+                    person_agg[name] = {"tokens": 0, "sessions": 0, "machines": set()}
+                person_agg[name]["tokens"] += item["totalTokens"]
+                person_agg[name]["sessions"] += item["sessions"]
+                person_agg[name]["machines"].add(item.get("sources", 0))
+
+        # Build ranked list
+        ranked = sorted(person_agg.items(), key=lambda x: (-x[1]["tokens"], -x[1]["sessions"]))
+
+        total_tokens = sum(d["tokens"] for _, d in ranked)
+        total_cost = total_tokens * 0.0000003
+        total_sessions = sum(d["sessions"] for _, d in ranked)
+        n = len(ranked)
+
+        # Wisdom scores
+        wisdom_raws = []
+        for _, d in ranked:
+            raw = (math.log10(max(d["tokens"], 1)) * 200
+                   + math.sqrt(d["sessions"]) * 60
+                   + len(d["machines"]) * 50)
+            wisdom_raws.append(raw)
+        max_raw = max(wisdom_raws) if wisdom_raws else 1
+
+        stats = {
+            "totalPeople": n,
+            "totalTokens": total_tokens,
+            "totalCost": round(total_cost, 6),
+            "totalSessions": total_sessions,
+            "avgTokensPerPerson": round(total_tokens / n) if n > 0 else 0,
+            "avgCostPerPerson": round(total_cost / n, 6) if n > 0 else 0,
+            "avgSessionsPerPerson": round(total_sessions / n, 1) if n > 0 else 0,
+            "totalWisdom": round(sum(wisdom_raws) / max_raw * 1000),
+            "avgWisdomPerPerson": round(sum(wisdom_raws) / max_raw * 1000 / max(n, 1)),
+        }
+
+        ranking = []
+        top5 = []
+        for i, (name, d) in enumerate(ranked, 1):
+            cost = round(d["tokens"] * 0.0000003, 6)
+            raw = wisdom_raws[i - 1]
+            wisdom = min(999, int(raw / max_raw * 1000))
+            item = {
+                "rank": i,
+                "name": name,
+                "totalTokens": d["tokens"],
+                "cost": cost,
+                "sessions": d["sessions"],
+                "sources": len(d["machines"]),
+                "wisdomScore": wisdom,
+                "updatedAt": now_str,
+            }
+            ranking.append(item)
+            if i <= 5:
+                top5.append(item)
+
+        aggregate = {
+            "updatedAt": now_str,
+            "dataSource": f"aggregate-{days}d (from {len(relevant_dates)} daily snapshots: {relevant_dates[0]} to {relevant_dates[-1]})",
+            "stats": stats,
+            "top5": top5,
+            "ranking": ranking,
+            "detail": [],
+            "timeRange": f"{days}d",
+        }
+
+        out_path = os.path.join(data_dir, out_name)
+        with open(out_path, "w") as f:
+            json.dump(aggregate, f, ensure_ascii=False)
+        print(f"📊 已生成 {out_name}: {n}人, {total_tokens:,} tokens ({len(relevant_dates)}天数据)", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
