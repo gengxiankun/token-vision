@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-01T19:05:49.000Z",
+  "updatedAt": "2026-06-01T20:01:25.000Z",
   "dataSource": "daily-optimize-report",
   "timeRange": "7d",
   "stats": {
     "totalPeople": 54,
-    "totalTokens": 42872953,
-    "totalCost": 12.861886,
+    "totalTokens": 43162663,
+    "totalCost": 12.948799,
     "totalSessions": 684,
-    "avgTokensPerPerson": 793944,
-    "avgCostPerPerson": 0.238183,
+    "avgTokensPerPerson": 799309,
+    "avgCostPerPerson": 0.239793,
     "avgSessionsPerPerson": 12.7,
-    "totalWisdom": 30348,
+    "totalWisdom": 30364,
     "avgWisdomPerPerson": 562
   },
   "top5": [
@@ -21,7 +21,7 @@
       "cost": 1.813354,
       "sessions": 72,
       "sources": 15,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 999
     },
     {
@@ -31,38 +31,38 @@
       "cost": 0.929451,
       "sessions": 64,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 718
     },
     {
       "rank": 3,
       "name": "卧龙先生 Master.Wolong",
-      "totalTokens": 3040494,
-      "cost": 0.912148,
-      "sessions": 77,
+      "totalTokens": 3016395,
+      "cost": 0.904918,
+      "sessions": 76,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 754
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 752
     },
     {
       "rank": 4,
+      "name": "Yeti",
+      "totalTokens": 1843921,
+      "cost": 0.553176,
+      "sessions": 29,
+      "sources": 2,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 640
+    },
+    {
+      "rank": 5,
       "name": "Chelsa",
       "totalTokens": 1790654,
       "cost": 0.537196,
       "sessions": 21,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 640
-    },
-    {
-      "rank": 5,
-      "name": "Yeti",
-      "totalTokens": 1727775,
-      "cost": 0.518332,
-      "sessions": 28,
-      "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 636
     }
   ],
   "ranking": [
@@ -73,7 +73,7 @@
       "cost": 1.813354,
       "sessions": 72,
       "sources": 15,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 999
     },
     {
@@ -83,38 +83,38 @@
       "cost": 0.929451,
       "sessions": 64,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 718
     },
     {
       "rank": 3,
       "name": "卧龙先生 Master.Wolong",
-      "totalTokens": 3040494,
-      "cost": 0.912148,
-      "sessions": 77,
+      "totalTokens": 3016395,
+      "cost": 0.904918,
+      "sessions": 76,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 754
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 752
     },
     {
       "rank": 4,
+      "name": "Yeti",
+      "totalTokens": 1843921,
+      "cost": 0.553176,
+      "sessions": 29,
+      "sources": 2,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 640
+    },
+    {
+      "rank": 5,
       "name": "Chelsa",
       "totalTokens": 1790654,
       "cost": 0.537196,
       "sessions": 21,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 640
-    },
-    {
-      "rank": 5,
-      "name": "Yeti",
-      "totalTokens": 1727775,
-      "cost": 0.518332,
-      "sessions": 28,
-      "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 636
     },
     {
       "rank": 6,
@@ -123,7 +123,7 @@
       "cost": 0.491047,
       "sessions": 31,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 660
     },
     {
@@ -133,7 +133,7 @@
       "cost": 0.486998,
       "sessions": 24,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 644
     },
     {
@@ -143,7 +143,7 @@
       "cost": 0.41389,
       "sessions": 20,
       "sources": 7,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 705
     },
     {
@@ -153,7 +153,7 @@
       "cost": 0.351907,
       "sessions": 12,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 581
     },
     {
@@ -163,7 +163,7 @@
       "cost": 0.30786,
       "sessions": 17,
       "sources": 4,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 630
     },
     {
@@ -173,58 +173,58 @@
       "cost": 0.302222,
       "sessions": 44,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 630
     },
     {
       "rank": 12,
+      "name": "Stuart",
+      "totalTokens": 948289,
+      "cost": 0.284487,
+      "sessions": 13,
+      "sources": 1,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 558
+    },
+    {
+      "rank": 13,
       "name": "Kevin",
       "totalTokens": 946285,
       "cost": 0.283886,
       "sessions": 15,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 603
     },
     {
-      "rank": 13,
-      "name": "49276",
-      "totalTokens": 885686,
-      "cost": 0.265706,
-      "sessions": 7,
-      "sources": 4,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 591
+      "rank": 14,
+      "name": "Sony",
+      "totalTokens": 906164,
+      "cost": 0.271849,
+      "sessions": 13,
+      "sources": 3,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 595
     },
     {
-      "rank": 14,
+      "rank": 15,
       "name": "Ling",
       "totalTokens": 880373,
       "cost": 0.264112,
       "sessions": 10,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 565
     },
     {
-      "rank": 15,
-      "name": "Sony",
-      "totalTokens": 874286,
-      "cost": 0.262286,
-      "sessions": 13,
-      "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 594
-    },
-    {
       "rank": 16,
-      "name": "Stuart",
-      "totalTokens": 833073,
-      "cost": 0.249922,
-      "sessions": 13,
-      "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 554
+      "name": "49276",
+      "totalTokens": 851949,
+      "cost": 0.255585,
+      "sessions": 7,
+      "sources": 4,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 590
     },
     {
       "rank": 17,
@@ -233,7 +233,7 @@
       "cost": 0.236353,
       "sessions": 15,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 577
     },
     {
@@ -243,7 +243,7 @@
       "cost": 0.227127,
       "sessions": 7,
       "sources": 5,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 605
     },
     {
@@ -253,17 +253,17 @@
       "cost": 0.220032,
       "sessions": 16,
       "sources": 12,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 769
     },
     {
       "rank": 20,
       "name": "Tom",
-      "totalTokens": 729001,
-      "cost": 0.2187,
+      "totalTokens": 730920,
+      "cost": 0.219276,
       "sessions": 10,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 559
     },
     {
@@ -273,7 +273,7 @@
       "cost": 0.201986,
       "sessions": 16,
       "sources": 9,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 709
     },
     {
@@ -283,7 +283,7 @@
       "cost": 0.197718,
       "sessions": 7,
       "sources": 7,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 639
     },
     {
@@ -293,7 +293,7 @@
       "cost": 0.182228,
       "sessions": 11,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 556
     },
     {
@@ -303,7 +303,7 @@
       "cost": 0.162281,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 480
     },
     {
@@ -313,7 +313,7 @@
       "cost": 0.15184,
       "sessions": 4,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 501
     },
     {
@@ -323,7 +323,7 @@
       "cost": 0.151407,
       "sessions": 7,
       "sources": 5,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 592
     },
     {
@@ -333,7 +333,7 @@
       "cost": 0.150722,
       "sessions": 3,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 513
     },
     {
@@ -343,88 +343,88 @@
       "cost": 0.150171,
       "sessions": 5,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 506
     },
     {
       "rank": 29,
       "name": "Lisa Liu",
-      "totalTokens": 429239,
-      "cost": 0.128772,
+      "totalTokens": 432603,
+      "cost": 0.129781,
       "sessions": 7,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 529
     },
     {
       "rank": 30,
+      "name": "Fowles",
+      "totalTokens": 431757,
+      "cost": 0.129527,
+      "sessions": 4,
+      "sources": 1,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 495
+    },
+    {
+      "rank": 31,
       "name": "Milly",
       "totalTokens": 423861,
       "cost": 0.127158,
       "sessions": 9,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 537
     },
     {
-      "rank": 31,
+      "rank": 32,
       "name": "Afeez",
       "totalTokens": 412285,
       "cost": 0.123685,
       "sessions": 2,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 500
     },
     {
-      "rank": 32,
+      "rank": 33,
       "name": "Zero",
       "totalTokens": 406619,
       "cost": 0.121986,
       "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 518
     },
     {
-      "rank": 33,
+      "rank": 34,
       "name": "Kaveh",
       "totalTokens": 393369,
       "cost": 0.118011,
       "sessions": 6,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 503
     },
     {
-      "rank": 34,
+      "rank": 35,
       "name": "Chris Yang",
       "totalTokens": 390767,
       "cost": 0.11723,
       "sessions": 5,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 498
     },
     {
-      "rank": 35,
+      "rank": 36,
       "name": "Quentin",
       "totalTokens": 389791,
       "cost": 0.116937,
       "sessions": 8,
       "sources": 7,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 626
-    },
-    {
-      "rank": 36,
-      "name": "Fowles",
-      "totalTokens": 376729,
-      "cost": 0.113019,
-      "sessions": 4,
-      "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 491
     },
     {
       "rank": 37,
@@ -433,7 +433,7 @@
       "cost": 0.104698,
       "sessions": 7,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 522
     },
     {
@@ -443,7 +443,7 @@
       "cost": 0.104555,
       "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 513
     },
     {
@@ -453,7 +453,7 @@
       "cost": 0.100171,
       "sessions": 6,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 497
     },
     {
@@ -463,17 +463,17 @@
       "cost": 0.099729,
       "sessions": 2,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 473
     },
     {
       "rank": 41,
       "name": "Lemon",
-      "totalTokens": 327565,
-      "cost": 0.098269,
+      "totalTokens": 325263,
+      "cost": 0.097579,
       "sessions": 5,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 511
     },
     {
@@ -483,7 +483,7 @@
       "cost": 0.09654,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 480
     },
     {
@@ -493,7 +493,7 @@
       "cost": 0.09317,
       "sessions": 5,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 528
     },
     {
@@ -503,48 +503,48 @@
       "cost": 0.075944,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 472
     },
     {
       "rank": 45,
       "name": "Hooyking",
-      "totalTokens": 238904,
-      "cost": 0.071671,
+      "totalTokens": 239415,
+      "cost": 0.071824,
       "sessions": 4,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 476
     },
     {
       "rank": 46,
-      "name": "Selina",
-      "totalTokens": 230756,
-      "cost": 0.069227,
-      "sessions": 5,
-      "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 499
-    },
-    {
-      "rank": 47,
       "name": "Nini",
       "totalTokens": 228200,
       "cost": 0.06846,
       "sessions": 6,
       "sources": 3,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 523
     },
     {
-      "rank": 48,
+      "rank": 47,
       "name": "Rick",
-      "totalTokens": 173619,
-      "cost": 0.052086,
+      "totalTokens": 217740,
+      "cost": 0.065322,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
-      "wisdomScore": 459
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 467
+    },
+    {
+      "rank": 48,
+      "name": "Selina",
+      "totalTokens": 212421,
+      "cost": 0.063726,
+      "sessions": 5,
+      "sources": 2,
+      "updatedAt": "2026-06-01T20:01:25.000Z",
+      "wisdomScore": 496
     },
     {
       "rank": 49,
@@ -553,7 +553,7 @@
       "cost": 0.050519,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 458
     },
     {
@@ -563,7 +563,7 @@
       "cost": 0.050012,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 441
     },
     {
@@ -573,7 +573,7 @@
       "cost": 0.043261,
       "sessions": 3,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 472
     },
     {
@@ -583,7 +583,7 @@
       "cost": 0.03717,
       "sessions": 3,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 448
     },
     {
@@ -593,7 +593,7 @@
       "cost": 0.031667,
       "sessions": 3,
       "sources": 2,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 462
     },
     {
@@ -603,7 +603,7 @@
       "cost": 0.007057,
       "sessions": 1,
       "sources": 1,
-      "updatedAt": "2026-06-01T19:05:49.000Z",
+      "updatedAt": "2026-06-01T20:01:25.000Z",
       "wisdomScore": 376
     }
   ]
