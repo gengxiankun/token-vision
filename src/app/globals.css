@@ -774,6 +774,27 @@ body {
 .light .terminal-root::after { display: none; }
 .light .terminal-root::before { display: none; }
 
+/* ── Matrix Rain Overlay (during boot) ──────── */
+.matrix-rain-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.matrix-rain-overlay canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.term-body {
+  position: relative;
+}
+
 /* ── Star Field — Cosmic Wisdom Visualization ── */
 .star-field-container {
   position: relative;

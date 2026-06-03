@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import StarChart from './star-chart';
+import MatrixRain from './matrix-rain';
 
 /* ── Types ──────────────────────────────────── */
 interface RankingItem {
@@ -67,6 +68,19 @@ const bar = (pct: number, len = 24): string => {
   return '█'.repeat(Math.max(0, f)) + '░'.repeat(Math.max(0, len - f));
 };
 
+/* ── Data freshness helper ──────────────────── */
+const getFreshness = (iso: string): { label: string; color: string; pct: number } => {
+  const now = Date.now();
+  const dataTs = new Date(iso).getTime();
+  const diffMin = Math.round((now - dataTs) / 60000);
+  if (diffMin < 15) return { label: 'FRESH', color: 'var(--c-green)', pct: 1.0 };
+  if (diffMin < 60) return { label: `${diffMin}m ago`, color: 'var(--c-amber)', pct: 0.6 };
+  if (diffMin < 180) return { label: `${diffMin}m ago`, color: 'var(--c-red)', pct: 0.3 };
+  return { label: 'STALE', color: 'var(--c-red)', pct: 0.0 };
+};
+
+const COMMANDS = ['dashboard', 'cards', 'search', 'top', 'ranking', 'wisdom', 'smart', 'stars', 'cosmos', 'galaxy', 'charts', 'refresh', 'help', 'clear', 'about'];
+
 /* ── Terminal line types ────────────────────── */
 type TermLine =
   | { type: 'header'; text: string }
@@ -91,6 +105,12 @@ export default function Home() {
   const [cmdIdx, setCmdIdx] = useState(-1);
   const [input, setInput] = useState('');
   const [starMode, setStarMode] = useState(false);
+  const [tabIdx, setTabIdx] = useState(0);
+  const [tabPrefix, setTabPrefix] = useState('');
+  /* ── Real-time clock ── */
+  const [liveTime, setLiveTime] = useState(new Date().toLocaleTimeString('zh-CN', { hour12: false }));
+  const dataRef = useRef<Data | null>(null);
+  dataRef.current = data;
   /* ── Time range: today | 7d | 30d | 3m ── */
   const [timeRange, setTimeRange] = useState<'today' | '7d' | '30d' | '3m'>('today');
   const [timeRangeLabel, setTimeRangeLabel] = useState('Today');
@@ -200,6 +220,14 @@ export default function Home() {
     }, 400);
     return () => clearInterval(interval);
   }, [bootPhase]);
+
+  /* ── Real-time clock tick ── */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveTime(new Date().toLocaleTimeString('zh-CN', { hour12: false }));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   /* ── Auto-scroll ── */
   useEffect(() => {
@@ -798,6 +826,31 @@ export default function Home() {
           setInput(cmdHistory[newIdx]);
         }
       }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      const cur = input.trim().toLowerCase();
+      if (!cur) {
+        // Empty: cycle through all commands
+        setTabIdx(prev => (prev + 1) % COMMANDS.length);
+        setInput(COMMANDS[(tabIdx + 1) % COMMANDS.length]);
+        setTabPrefix('');
+      } else {
+        const matches = COMMANDS.filter(c => c.startsWith(cur));
+        if (matches.length === 1) {
+          setInput(matches[0]);
+        } else if (matches.length > 1) {
+          // Cycle through matches
+          const mIdx = tabPrefix === cur ? tabIdx : 0;
+          setTabPrefix(cur);
+          setTabIdx((mIdx + 1) % matches.length);
+          setInput(matches[(mIdx + 1) % matches.length]);
+        }
+      }
+      return;
+    } else {
+      // Reset tab cycle on any other key
+      setTabIdx(0);
+      setTabPrefix('');
     }
   };
 
@@ -879,6 +932,12 @@ export default function Home() {
         />
       ) : (
       <div className="term-body" ref={scrollRef}>
+        {/* Matrix Rain overlay during boot */}
+        {bootPhase === 'booting' && (
+          <div className="matrix-rain-overlay">
+            <MatrixRain mode={mode} opacity={0.6} />
+          </div>
+        )}
         {outputLines.map((line, i) => {
           if (line.type === 'sep') return <hr key={i} className="term-hr" />;
           if (line.type === 'raw') return <div key={i} className="term-line term-dim" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{line.text}</div>;
@@ -921,13 +980,27 @@ export default function Home() {
 
       {/* Status bar */}
       <div className="term-statusbar">
-        <span className="term-dim">{mode === 'dark' ? 'DARK' : 'LIGHT'}</span>
         <span className="term-green">●</span>
+        <span className="term-dim" style={{ minWidth: 70 }}>{liveTime}</span>
+        <span className="term-dim">|</span>
         <span className="term-dim">
           {data
-            ? `${timeRangeLabel} · ${data.stats.totalPeople} nodes · ${fmt(data.stats.totalTokens)} tokens · updated ${fmtDate(data.updatedAt)}`
+            ? `${timeRangeLabel} · ${data.stats.totalPeople} nodes · ${fmt(data.stats.totalTokens)} tokens`
             : 'initializing...'}
         </span>
+        {data && (() => {
+          const f = getFreshness(data.updatedAt);
+          return (
+            <>
+              <span className="term-dim">|</span>
+              <span style={{ color: f.color }}>
+                ● {f.label}
+              </span>
+            </>
+          );
+        })()}
+        <span style={{ flex: 1 }} />
+        <span className="term-dim">{mode === 'dark' ? 'DARK' : 'LIGHT'}</span>
         {bootPhase === 'ready' && <span className="cursor-blink-sm" />}
       </div>
     </div>

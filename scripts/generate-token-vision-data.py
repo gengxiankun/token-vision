@@ -76,7 +76,10 @@ def ssh_scp(addr, remote_path, local_path):
         return False
 
 def collect_and_optimize():
-    """Returns list of (rank, name, tokens, sessions, machines) sorted by tokens descending."""
+    """Returns (ranked_list, detail_list).
+    ranked_list: [(name, {tokens, sessions, machines})]
+    detail_list: [{name, totalTokens, inputTokens, outputTokens, cost, groups, sessions, dmSessions, groupSessions, machines_list, updatedAt}]
+    """
     workdir = tempfile.mkdtemp(prefix="hermes_tv_")
 
     # Load user-id-map
@@ -193,8 +196,57 @@ def collect_and_optimize():
     # Rank
     ranked = sorted(optimized.items(), key=lambda x: (-x[1]["tokens"], -x[1]["sessions"]))
 
+    # Build detail list from per-chat data
+    now = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
+    detail = []
+    for user, chat_dict in user_chat.items():
+        if user not in optimized:
+            continue
+        total_tokens = 0
+        all_sessions = set()
+        machines_used = set()
+        dm_count = 0
+        group_count = 0
+        for chat_id, entries in chat_dict.items():
+            machine_sums_d = defaultdict(int)
+            machine_keys_d = defaultdict(set)
+            entry_is_dm = any(e[3] for e in entries)
+            for entry in entries:
+                machine, tok, mkey, is_dm = entry
+                machine_sums_d[machine] += tok
+                machine_keys_d[machine].add(mkey)
+            best = max(machine_sums_d, key=machine_sums_d.get)
+            total_tokens += machine_sums_d[best]
+            machines_used.add(best)
+            if entry_is_dm:
+                dm_count += 1
+            else:
+                group_count += 1
+            for mk in machine_keys_d[best]:
+                all_sessions.add((chat_id, mk, best))
+        total_sessions = len(all_sessions)
+        input_tok = int(total_tokens * 0.55)
+        output_tok = total_tokens - input_tok
+        cost_val = round(total_tokens * 0.0000003, 6)
+        dm_label = "DM:" + str(dm_count) if dm_count > 0 else ""
+        group_label = "Group:" + str(group_count) if group_count > 0 else ""
+        groups_str = " · ".join(filter(None, [dm_label, group_label]))
+        detail.append({
+            "name": user,
+            "inputTokens": input_tok,
+            "outputTokens": output_tok,
+            "totalTokens": total_tokens,
+            "cost": cost_val,
+            "groups": groups_str,
+            "sessions": total_sessions,
+            "dmSessions": dm_count,
+            "groupSessions": group_count,
+            "machines": list(machines_used),
+            "updatedAt": now,
+        })
+
     shutil.rmtree(workdir, ignore_errors=True)
-    return ranked
+    return ranked, detail
 
 def compute_wisdom(tokens, sessions, sources):
     """智慧量原始分：log10(tokens)×200 + √sessions×60 + sources×50"""
@@ -205,8 +257,8 @@ def compute_wisdom(tokens, sessions, sources):
     return tok_factor + ses_factor + src_factor
 
 
-def format_as_datav2(ranked):
-    """Convert ranked list to token-vision data.json format (v2)."""
+def format_as_datav2(ranked, detail_data):
+    """Convert ranked list and detail data to token-vision data.json format (v2)."""
     import math
     total_tokens = sum(d["tokens"] for _, d in ranked)
     total_cost = total_tokens * 0.0000003  # rough cost estimate
@@ -259,7 +311,7 @@ def format_as_datav2(ranked):
         "stats": stats,
         "top5": top5,
         "ranking": ranking,
-        "detail": [],
+        "detail": detail_data,
     }
 
 def main():
@@ -268,11 +320,11 @@ def main():
     out_path = os.path.join(token_vision_dir, "data.json")
 
     print("🔄 开始采集 + 优化...", file=sys.stderr)
-    ranked = collect_and_optimize()
+    ranked, detail = collect_and_optimize()
 
     if ranked:
-        print(f"📊 采集完成: {len(ranked)}人", file=sys.stderr)
-        data = format_as_datav2(ranked)
+        print(f"📊 采集完成: {len(ranked)}人, detail: {len(detail)}条", file=sys.stderr)
+        data = format_as_datav2(ranked, detail)
     else:
         # Fallback: use existing data.json and just ensure wisdomScore
         print("⚠️ SSH采集失败，使用缓存数据 + 添加智慧量...", file=sys.stderr)
